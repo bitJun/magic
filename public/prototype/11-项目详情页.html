@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>项目详情 - 智能素材管理系统</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">✦</div>
+      <div class="logo-text">
+        <span class="brand">大魔王</span>
+        <span class="subtitle">智能素材管理</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">主菜单</div>
+        <a href="01-智能搜索.html" class="nav-item">
+          <span class="nav-icon">🔍</span> 智能搜索
+        </a>
+        <a href="02-素材库管理.html" class="nav-item">
+          <span class="nav-icon">📁</span> 素材库
+        </a>
+        <a href="03-项目管理.html" class="nav-item active">
+          <span class="nav-icon">📂</span> 项目管理
+        </a>
+        <a href="04-人脸识别库.html" class="nav-item">
+          <span class="nav-icon">👤</span> 人脸库
+        </a>
+        <a href="05-数据分析.html" class="nav-item">
+          <span class="nav-icon">📊</span> 数据分析
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">系统</div>
+        <a href="15-设置页面.html" class="nav-item">
+          <span class="nav-icon">⚙️</span> 设置
+        </a>
+        <a href="20-回收站.html" class="nav-item">
+          <span class="nav-icon">🗑️</span> 回收站
+        </a>
+      </div>
+    </nav>
+    <a href="16-用户个人信息.html" class="sidebar-user">
+      <div class="user-avatar">张</div>
+      <div class="user-info">
+        <div class="user-name">张三</div>
+        <div class="user-role">管理员</div>
+      </div>
+    </a>
+  </aside>
+
+  <!-- ===== Main Content ===== -->
+  <main class="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <div class="breadcrumb">
+          <a href="03-项目管理.html">项目管理</a>
+          <span class="sep">›</span>
+          <span class="current">护肤品A系列</span>
+        </div>
+        <h1 class="page-title">项目详情</h1>
+      </div>
+    </div>
+
+    <div class="content-area">
+      <!-- ===== Project Header Card ===== -->
+      <div class="project-detail-header">
+        <div class="pd-color" style="background: #ef4444;"></div>
+        <div class="pd-info">
+          <div class="pd-name">
+            护肤品A系列
+            <span class="badge badge-green">🟢 进行中</span>
+          </div>
+          <div class="pd-desc">
+            针对护肤品A系列的短视频素材采集与管理项目，覆盖产品展示、使用教程、用户反馈等多种内容类型。
+          </div>
+          <div class="pd-dates">
+            <span>创建时间: 2026-01-15</span>
+            <span>最近更新: 2026-02-07</span>
+            <span>负责人: 张三</span>
+          </div>
+        </div>
+        <div class="pd-actions">
+          <button class="btn btn-outline" onclick="openModal('editProjectModal')">✏️ 编辑</button>
+          <button class="btn btn-outline">📦 归档</button>
+          <button class="btn btn-danger">🔒 删除</button>
+        </div>
+      </div>
+
+      <!-- ===== Stat Cards ===== -->
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-icon purple">📁</div>
+          <div class="stat-label">素材数量</div>
+          <div class="stat-value">234</div>
+          <div class="stat-change up">↑ 18 本周新增</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">🎬</div>
+          <div class="stat-label">分镜数量</div>
+          <div class="stat-value">1,567</div>
+          <div class="stat-change up">↑ 120 本周新增</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">💾</div>
+          <div class="stat-label">存储空间</div>
+          <div class="stat-value">45.6<span style="font-size:16px;font-weight:400;color:var(--text-muted);"> GB</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon pink">🔄</div>
+          <div class="stat-label">复用率</div>
+          <div class="stat-value">82.3<span style="font-size:16px;font-weight:400;color:var(--text-muted);">%</span></div>
+          <div class="stat-change up">↑ 5.2%</div>
+        </div>
+      </div>
+
+      <!-- ===== Tab Bar ===== -->
+      <div class="tab-bar">
+        <div class="tab-item active">素材列表</div>
+        <div class="tab-item">操作记录</div>
+      </div>
+
+      <!-- ===== Search Toolbar ===== -->
+      <div class="search-toolbar">
+        <div class="toolbar-search">
+          <span class="s-icon">🔍</span>
+          <input type="text" placeholder="搜索素材名称、标签...">
+        </div>
+        <button class="btn btn-primary" onclick="openModal('uploadModal')">⬆ 上传素材到此项目</button>
+      </div>
+
+      <!-- ===== Materials Table ===== -->
+      <div class="data-table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:40px;"><input type="checkbox" class="cb"></th>
+              <th style="width:70px;">预览</th>
+              <th>文件名</th>
+              <th style="width:80px;">时长</th>
+              <th style="width:80px;">分镜数</th>
+              <th style="width:100px;">状态</th>
+              <th style="width:220px;">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Row 1 -->
+            <tr>
+              <td><input type="checkbox" class="cb"></td>
+              <td>
+                <div class="preview-thumb">
+                  <svg viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="60" height="40" fill="#1a1a2e"/>
+                    <polygon points="24,12 24,28 36,20" fill="#8b5cf6" opacity="0.5"/>
+                  </svg>
+                </div>
+              </td>
+              <td>
+                <div class="file-info">
+                  <div class="file-name">护肤品_涂抹质地_01.mp4</div>
+                  <div class="file-meta">1.2GB · 1920×1080 · 30fps</div>
+                </div>
+              </td>
+              <td>00:45</td>
+              <td><span style="color:var(--accent-light);font-weight:600;">12</span></td>
+              <td><span class="badge badge-green">✓ 已完成</span></td>
+              <td>
+                <div class="actions-cell">
+                  <a href="09-素材分镜列表页.html" class="btn btn-ghost btn-sm">🎬 查看分镜</a>
+                  <button class="btn btn-outline btn-xs">⬇</button>
+                  <button class="btn btn-danger btn-xs">🗑</button>
+                </div>
+              </td>
+            </tr>
+            <!-- Row 2 -->
+            <tr>
+              <td><input type="checkbox" class="cb"></td>
+              <td>
+                <div class="preview-thumb">
+                  <svg viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="60" height="40" fill="#1a1a2e"/>
+                    <polygon points="24,12 24,28 36,20" fill="#ec4899" opacity="0.5"/>
+                  </svg>
+                </div>
+              </td>
+              <td>
+                <div class="file-info">
+                  <div class="file-name">模特_护肤教程_02.mp4</div>
+                  <div class="file-meta">890MB · 1920×1080 · 30fps</div>
+                </div>
+              </td>
+              <td>01:20</td>
+              <td><span style="color:var(--accent-light);font-weight:600;">18</span></td>
+              <td><span class="badge badge-green">✓ 已完成</span></td>
+              <td>
+                <div class="actions-cell">
+                  <a href="09-素材分镜列表页.html" class="btn btn-ghost btn-sm">🎬 查看分镜</a>
+                  <button class="btn btn-outline btn-xs">⬇</button>
+                  <button class="btn btn-danger btn-xs">🗑</button>
+                </div>
+              </td>
+            </tr>
+            <!-- Row 3 -->
+            <tr>
+              <td><input type="checkbox" class="cb"></td>
+              <td>
+                <div class="preview-thumb">
+                  <svg viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="60" height="40" fill="#1a1a2e"/>
+                    <polygon points="24,12 24,28 36,20" fill="#3b82f6" opacity="0.5"/>
+                  </svg>
+                </div>
+              </td>
+              <td>
+                <div class="file-info">
+                  <div class="file-name">用户反馈_好评合集.mp4</div>
+                  <div class="file-meta">650MB · 1080×1920 · 30fps</div>
+                </div>
+              </td>
+              <td>02:10</td>
+              <td><span style="color:var(--accent-light);font-weight:600;">24</span></td>
+              <td>
+                <div class="status-detail">
+                  <span class="badge badge-blue">⏳ 分析中</span>
+                  <div class="status-progress">
+                    <div class="mini-progress"><div class="mini-progress-fill" style="width:65%;"></div></div>
+                    <span>65%</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <a href="09-素材分镜列表页.html" class="btn btn-ghost btn-sm">🎬 查看分镜</a>
+                  <button class="btn btn-outline btn-xs">⬇</button>
+                  <button class="btn btn-danger btn-xs">🗑</button>
+                </div>
+              </td>
+            </tr>
+            <!-- Row 4: 分析失败 -->
+            <tr>
+              <td><input type="checkbox" class="cb"></td>
+              <td>
+                <div class="preview-thumb">
+                  <svg viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="60" height="40" fill="#1a1a2e"/>
+                    <circle cx="30" cy="20" r="10" fill="#ef4444" opacity="0.15"/>
+                    <text x="30" y="24" text-anchor="middle" font-size="12" fill="#ef4444" opacity="0.6">✕</text>
+                  </svg>
+                </div>
+              </td>
+              <td>
+                <div class="file-info">
+                  <div class="file-name">面膜_使用效果_04.avi</div>
+                  <div class="file-meta">920MB · 1920×1080 · 30fps</div>
+                </div>
+              </td>
+              <td>00:52</td>
+              <td>—</td>
+              <td>
+                <div class="status-detail">
+                  <span class="badge badge-red">❌ 分析失败</span>
+                  <span class="status-error">已重试3次 · 格式不支持(.avi)</span>
+                </div>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <button class="btn btn-yellow btn-xs">⚡ 重新分析</button>
+                  <button class="btn btn-outline btn-xs">⬇</button>
+                  <button class="btn btn-danger btn-xs">🗑</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ===== Edit Project Modal ===== -->
+<div class="modal-overlay" id="editProjectModal">
+  <div class="modal" style="max-width:550px;width:92%;padding:0;">
+    <div class="modal-inner" style="padding:28px;">
+      <div class="modal-header">
+        <h2 class="modal-title">编辑项目</h2>
+        <button class="modal-close" onclick="closeModal('editProjectModal')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">项目名称 <span style="color:#f87171;">*</span></label>
+          <input type="text" class="form-input" value="护肤品A系列">
+          <div style="font-size:11px;color:var(--text-dim-alt);margin-top:4px;">50字以内，不可重复</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">项目描述</label>
+          <textarea class="form-textarea">针对护肤品A系列的短视频素材采集与管理项目，覆盖产品展示、使用教程、用户反馈等多种内容类型。</textarea>
+          <div style="font-size:11px;color:var(--text-dim-alt);margin-top:4px;">200字以内</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">项目标识色</label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <div style="width:32px;height:32px;border-radius:50%;background:#8b5cf6;cursor:pointer;border:3px solid var(--text-heading);box-shadow:0 0 0 2px rgba(255,255,255,0.15);"></div>
+            <div style="width:32px;height:32px;border-radius:50%;background:#ec4899;cursor:pointer;border:3px solid transparent;"></div>
+            <div style="width:32px;height:32px;border-radius:50%;background:#3b82f6;cursor:pointer;border:3px solid transparent;"></div>
+            <div style="width:32px;height:32px;border-radius:50%;background:#10b981;cursor:pointer;border:3px solid transparent;"></div>
+            <div style="width:32px;height:32px;border-radius:50%;background:#f59e0b;cursor:pointer;border:3px solid transparent;"></div>
+            <div style="width:32px;height:32px;border-radius:50%;background:#ef4444;cursor:pointer;border:3px solid transparent;"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">项目负责人</label>
+          <select class="form-select">
+            <option value="">选择成员...</option>
+            <option selected>张三（管理员）</option>
+            <option>李四（剪辑师）</option>
+            <option>王五（投放运营）</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">项目状态 <span style="color:#f87171;">*</span></label>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <label style="display:flex;align-items:center;gap:8px;padding:8px 18px;border-radius:var(--radius-small);background:rgba(139,92,246,0.1);border:1px solid var(--purple);font-size:13px;color:var(--text-active);cursor:pointer;">🟢 进行中</label>
+            <label style="display:flex;align-items:center;gap:8px;padding:8px 18px;border-radius:var(--radius-small);background:rgba(15,15,25,0.6);border:1px solid var(--border-color);font-size:13px;color:var(--text-body);cursor:pointer;">🔵 已完成</label>
+            <label style="display:flex;align-items:center;gap:8px;padding:8px 18px;border-radius:var(--radius-small);background:rgba(15,15,25,0.6);border:1px solid var(--border-color);font-size:13px;color:var(--text-body);cursor:pointer;">🟡 已归档</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('editProjectModal')">取消</button>
+        <button class="btn-primary">保存修改</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Upload Modal ===== -->
+<div class="modal-overlay" id="uploadModal">
+  <div class="modal" style="max-width:700px;width:92%;padding:0;">
+    <div class="modal-inner" style="padding:28px;">
+      <div class="modal-header">
+        <h2 class="modal-title">上传素材</h2>
+        <button class="modal-close" onclick="closeModal('uploadModal')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:600;color:var(--text-heading);margin-bottom:10px;">选择所属项目（可多选）</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+          <label style="display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--radius-small);background:rgba(139,92,246,0.1);border:1px solid var(--purple);font-size:13px;color:var(--text-active);cursor:pointer;">
+            <span style="width:16px;height:16px;border-radius:4px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;"><path d="M2 6l3 3 5-5"/></svg>
+            </span>
+            护肤品A系列
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--radius-small);background:rgba(15,15,25,0.6);border:1px solid var(--border-color);font-size:13px;color:var(--text-body);cursor:pointer;">口红系列</label>
+          <label style="display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--radius-small);background:rgba(15,15,25,0.6);border:1px solid var(--border-color);font-size:13px;color:var(--text-body);cursor:pointer;">眼影系列</label>
+        </div>
+        <div style="font-size:11px;color:var(--text-dim-alt);margin-top:8px;">不选择任何项目将自动归入「未分类」</div>
+      </div>
+
+      <div style="border:2px dashed rgba(139,92,246,0.25);border-radius:var(--radius-card);padding:36px 24px;text-align:center;margin-bottom:20px;background:rgba(139,92,246,0.03);cursor:pointer;">
+        <div style="width:56px;height:56px;margin:0 auto 14px;border-radius:50%;background:rgba(139,92,246,0.1);display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:28px;height:28px;color:var(--text-tag);">
+            <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-5l-2-2H5a2 2 0 00-2 2z"/>
+            <path d="M12 11v6M9 14l3-3 3 3"/>
+          </svg>
+        </div>
+        <div style="font-size:14px;color:var(--text-body-alt);margin-bottom:14px;">拖拽文件或文件夹到这里上传</div>
+        <div style="display:flex;justify-content:center;gap:10px;">
+          <button style="padding:7px 18px;font-size:13px;font-weight:500;border-radius:var(--radius-small);border:1px solid var(--border-accent);background:rgba(139,92,246,0.08);color:var(--text-active);cursor:pointer;">选择文件</button>
+          <button style="padding:7px 18px;font-size:13px;font-weight:500;border-radius:var(--radius-small);border:1px solid var(--border-accent);background:rgba(139,92,246,0.08);color:var(--text-active);cursor:pointer;">选择文件夹</button>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('uploadModal')">取消</button>
+        <button class="btn-primary">开始上传</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.modal-overlay').forEach(function(el) {
+  el.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
+});
+</script>
+</body>
+</html>

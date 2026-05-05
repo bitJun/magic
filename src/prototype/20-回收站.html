@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>回收站 - 智能素材管理系统</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .uploader {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+    .uploader .uploader-avatar {
+      flex-shrink: 0;
+    }
+    .uploader span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">✦</div>
+      <div class="logo-text">
+        <span class="brand">大魔王</span>
+        <span class="subtitle">智能素材管理</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">主菜单</div>
+        <a href="01-智能搜索.html" class="nav-item">
+          <span class="nav-icon">🔍</span> 智能搜索
+        </a>
+        <a href="02-素材库管理.html" class="nav-item">
+          <span class="nav-icon">📁</span> 素材库
+        </a>
+        <a href="03-项目管理.html" class="nav-item">
+          <span class="nav-icon">📂</span> 项目管理
+        </a>
+        <a href="04-人脸识别库.html" class="nav-item">
+          <span class="nav-icon">👤</span> 人脸库
+        </a>
+        <a href="05-数据分析.html" class="nav-item">
+          <span class="nav-icon">📊</span> 数据分析
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">系统</div>
+        <a href="15-设置页面.html" class="nav-item">
+          <span class="nav-icon">⚙️</span> 设置
+        </a>
+        <a href="20-回收站.html" class="nav-item active">
+          <span class="nav-icon">🗑️</span> 回收站
+        </a>
+      </div>
+    </nav>
+    <a href="16-用户个人信息.html" class="sidebar-user">
+      <div class="user-avatar">张</div>
+      <div class="user-info">
+        <div class="user-name">张三</div>
+        <div class="user-role">管理员</div>
+      </div>
+    </a>
+  </aside>
+
+  <!-- ===== Main Content ===== -->
+  <main class="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">🗑️ 回收站</h1>
+        <div class="page-subtitle">已删除素材30天后自动永久删除 | 仅管理员可操作</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-danger" style="box-shadow: 0 0 15px rgba(239,68,68,0.2);">🔒 清空回收站</button>
+      </div>
+    </div>
+
+    <div class="content-area">
+      <!-- ===== Stat Cards ===== -->
+      <div class="stat-cards-3">
+        <div class="stat-card">
+          <div class="stat-icon purple">🗑️</div>
+          <div class="stat-label">回收站素材</div>
+          <div class="stat-value">8 <span style="font-size:16px;font-weight:400;color:var(--text-muted);">个</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">💾</div>
+          <div class="stat-label">占用空间</div>
+          <div class="stat-value">3.2 <span style="font-size:16px;font-weight:400;color:var(--text-muted);">GB</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:var(--red-bg);color:var(--red);">⏰</div>
+          <div class="stat-label">最早到期</div>
+          <div class="stat-value" style="color:var(--red);">5 <span style="font-size:16px;font-weight:400;">天后</span></div>
+          <div style="font-size:12px;color:var(--red);font-weight:600;margin-top:4px;">⚠ 2个素材即将永久删除</div>
+        </div>
+      </div>
+
+      <!-- ===== Data Table ===== -->
+      <div class="data-table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:40px;"><input type="checkbox" class="cb"></th>
+              <th style="width:70px;">预览</th>
+              <th>文件名</th>
+              <th style="width:120px;">原所属项目</th>
+              <th style="width:100px;">删除者</th>
+              <th style="width:120px;">删除时间</th>
+              <th style="width:90px;">剩余天数</th>
+              <th style="width:180px;">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Row 1 - 5 days remaining (urgent) -->
+            <tr>
+              <td><input type="checkbox" class="cb"></td>
+              <td>
+                <div class="preview-thumb">
+                  <svg viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="60" height="40" fill="#1a1a2e"/>
+                    <polygon points="24,12 24,28 36,20" fill="#8b5cf6" opacity="0.4"/>
+                  </svg>
+                </div>
+              </td>
+              <td>
+                <div class="file-info">
+                  <div class="file-name">旧素材_测试_01.mp4</div>
+                  <div class="file-meta">560MB · 1920×1080 · <span style="color:var(--accent-light);">关联分镜: 8个(已保留)</span></div>
+                </div>
+              </td>
+              <td>护肤品A系列</td>
+              <td>
+                <div class="uploader">
+                  <div class="uploader-avatar">张</div>
+                  <span>管理员张三</span>
+                </div>
+              </td>
+              <td style="color:var(--text-muted);">2026-02-02</td>
+              <td>
+                <span class="days-remaining urgent">5天</span>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <button class="btn btn-green btn-sm">✓ 恢复</button>
+                  <button class="btn btn-danger btn-sm">永久删除</button>
+                </div>
+              </td>
+            </tr>
+            <!-- Row 2 - 6 days remaining (urgent) -->
+            <tr>
+              <td><input type="checkbox" class="cb"></td>
+              <td>
+                <div class="preview-thumb">
+                  <svg viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="60" height="40" fill="#1a1a2e"/>
+                    <polygon points="24,12 24,28 36,20" fill="#ec4899" opacity="0.4"/>
+                  </svg>
+                </div>
+              </td>
+              <td>
+                <div class="file-info">
+                  <div class="file-name">废弃_拍摄失误_03.mp4</div>
+                  <div class="file-meta">320MB · 1080×1920 · <span style="color:var(--accent-light);">关联分镜: 3个(已保留)</span></div>
+                </div>
+              </td>
+              <td>彩妆B系列</td>
+              <td>
+                <div class="uploader">
+                  <div class="uploader-avatar">李</div>
+                  <span>李四</span>
+                </div>
+              </td>
+              <td style="color:var(--text-muted);">2026-02-01</td>
+              <td>
+                <span class="days-remaining urgent">6天</span>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <button class="btn btn-green btn-sm">✓ 恢复</button>
+                  <button class="btn btn-danger btn-sm">永久删除</button>
+                </div>
+              </td>
+            </tr>
+            <!-- Row 3 - 28 days remaining (safe) -->
+            <tr>
+              <td><input type="checkbox" class="cb"></td>
+              <td>
+                <div class="preview-thumb">
+                  <svg viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="60" height="40" fill="#1a1a2e"/>
+                    <polygon points="24,12 24,28 36,20" fill="#3b82f6" opacity="0.4"/>
+                  </svg>
+                </div>
+              </td>
+              <td>
+                <div class="file-info">
+                  <div class="file-name">重复上传_产品展示.mp4</div>
+                  <div class="file-meta">780MB · 1920×1080 · <span style="color:var(--accent-light);">关联分镜: 5个(已保留)</span></div>
+                </div>
+              </td>
+              <td>护肤品A系列</td>
+              <td>
+                <div class="uploader">
+                  <div class="uploader-avatar">张</div>
+                  <span>管理员张三</span>
+                </div>
+              </td>
+              <td style="color:var(--text-muted);">2026-02-05</td>
+              <td>
+                <span class="days-remaining safe">28天</span>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <button class="btn btn-green btn-sm">✓ 恢复</button>
+                  <button class="btn btn-danger btn-sm">永久删除</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ===== Info Box ===== -->
+      <div class="info-box">
+        <div class="ib-title">ℹ️ 回收站说明</div>
+        <ul>
+          <li>删除的素材将在回收站保留 30 天，到期后自动永久删除</li>
+          <li>恢复素材后，该素材将回到原所属项目中</li>
+          <li>素材删除后，其关联的分镜仍然保留，可正常使用和下载</li>
+          <li>仅管理员有权限清空回收站或永久删除素材</li>
+          <li>永久删除操作不可逆，请谨慎操作</li>
+        </ul>
+      </div>
+
+    </div>
+  </main>
+</div>
+</body>
+</html>

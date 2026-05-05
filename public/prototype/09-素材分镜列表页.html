@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>素材分镜列表 - 智能素材管理系统</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">✦</div>
+      <div class="logo-text">
+        <span class="brand">大魔王</span>
+        <span class="subtitle">智能素材管理</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">主菜单</div>
+        <a href="01-智能搜索.html" class="nav-item">
+          <span class="nav-icon">🔍</span> 智能搜索
+        </a>
+        <a href="02-素材库管理.html" class="nav-item active">
+          <span class="nav-icon">📁</span> 素材库
+        </a>
+        <a href="03-项目管理.html" class="nav-item">
+          <span class="nav-icon">📂</span> 项目管理
+        </a>
+        <a href="04-人脸识别库.html" class="nav-item">
+          <span class="nav-icon">👤</span> 人脸库
+        </a>
+        <a href="05-数据分析.html" class="nav-item">
+          <span class="nav-icon">📊</span> 数据分析
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">系统</div>
+        <a href="15-设置页面.html" class="nav-item">
+          <span class="nav-icon">⚙️</span> 设置
+        </a>
+        <a href="20-回收站.html" class="nav-item">
+          <span class="nav-icon">🗑️</span> 回收站
+        </a>
+      </div>
+    </nav>
+    <a href="16-用户个人信息.html" class="sidebar-user">
+      <div class="user-avatar">张</div>
+      <div class="user-info">
+        <div class="user-name">张三</div>
+        <div class="user-role">管理员</div>
+      </div>
+    </a>
+  </aside>
+
+  <!-- ===== Main Content ===== -->
+  <main class="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <div class="breadcrumb">
+          <a href="02-素材库管理.html">素材库</a>
+          <span class="sep">›</span>
+          <span class="current">护肤品_涂抹质地_01.mp4</span>
+        </div>
+        <h1 class="page-title">素材分镜列表</h1>
+      </div>
+    </div>
+
+    <div class="content-area">
+      <!-- ===== Material Info Card ===== -->
+      <div class="material-header">
+        <!-- Preview -->
+        <div class="material-preview svg-bg">
+          <svg viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="200" height="130" rx="4" fill="none"/>
+            <polygon points="85,45 85,85 115,65" fill="white" opacity="0.3"/>
+            <rect x="30" y="100" width="140" height="4" rx="2" fill="white" opacity="0.1"/>
+            <rect x="30" y="100" width="50" height="4" rx="2" fill="white" opacity="0.25"/>
+          </svg>
+        </div>
+
+        <!-- Info -->
+        <div class="material-info">
+          <div class="material-name">护肤品_涂抹质地_01.mp4</div>
+          <div class="material-meta">
+            大小: 1.2GB &nbsp;·&nbsp; 分辨率: 1920×1080 &nbsp;·&nbsp; 30fps &nbsp;·&nbsp; 时长: 00:45<br>
+            所属项目: <a href="11-项目详情页.html">护肤品A系列</a><br>
+            上传者: 张三 &nbsp;·&nbsp; 上传时间: 2026-02-01 10:00<br>
+            <span class="badge badge-green" style="margin-top:6px;">✓ 分析完成</span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="material-actions">
+          <button class="btn btn-primary">⬇ 下载原片</button>
+          <button class="btn btn-outline">🔄 重新分析</button>
+          <button class="btn btn-danger btn-sm">🗑 删除素材</button>
+        </div>
+      </div>
+
+      <!-- ===== Timeline Bar ===== -->
+      <div class="timeline-section">
+        <div class="tl-label">📐 分镜时间轴</div>
+        <div class="timeline-track">
+          <div class="tl-seg purple" style="flex:5;">S1</div>
+          <div class="tl-seg pink"   style="flex:8;">S2</div>
+          <div class="tl-seg blue"   style="flex:6;">S3</div>
+          <div class="tl-seg green"  style="flex:4;">S4</div>
+          <div class="tl-seg yellow" style="flex:7;">S5</div>
+          <div class="tl-seg indigo" style="flex:6;">S6</div>
+        </div>
+        <div class="timeline-times">
+          <span>0:00</span>
+          <span>0:07</span>
+          <span>0:15</span>
+          <span>0:22</span>
+          <span>0:28</span>
+          <span>0:35</span>
+          <span>0:45</span>
+        </div>
+      </div>
+
+
+      <!-- ===== Tag Filter Bar ===== -->
+      <div class="shot-filter-bar" id="shotFilterBar">
+        <span class="shot-filter-label">🏷️ 标签筛选（AND）</span>
+        <span class="shot-tag selected" data-filter-tag="#产品">#产品</span>
+        <span class="shot-tag" data-filter-tag="#展示">#展示</span>
+        <span class="shot-tag" data-filter-tag="#特写">#特写</span>
+        <span class="shot-tag" data-filter-tag="#涂抹">#涂抹</span>
+        <span class="shot-tag" data-filter-tag="#质地">#质地</span>
+        <span class="shot-tag" data-filter-tag="#手部">#手部</span>
+        <span class="shot-tag" data-filter-tag="#痛点">#痛点</span>
+        <span class="shot-tag" data-filter-tag="#哭泣">#哭泣</span>
+        <span class="shot-tag" data-filter-tag="#镜子">#镜子</span>
+        <span class="shot-tag" data-filter-tag="#室内">#室内</span>
+        <span class="shot-tag" data-filter-tag="#对比">#对比</span>
+        <span class="shot-tag" data-filter-tag="#效果">#效果</span>
+        <span class="shot-tag" data-filter-tag="#分屏">#分屏</span>
+        <span class="shot-tag" style="margin-left:6px;" id="clearTagFilters">清空</span>
+        <span class="shot-filter-meta">已选：<strong id="selectedTagCount">1</strong> 个</span>
+      </div>
+
+      <!-- ===== Action Bar ===== -->
+      <div class="action-bar">
+        <div class="ab-left">
+          <span class="ab-count">共 <strong>12</strong> 个分镜</span>
+          <label class="flex items-center gap-8" style="font-size:13px;color:var(--text-muted);cursor:pointer;">
+            <input type="checkbox" class="cb"> 全选
+          </label>
+        </div>
+        <div class="ab-right">
+          <button class="btn btn-outline btn-sm" id="batchTagBtn">🏷️ 批量打标</button>
+          <button class="btn btn-outline btn-sm">⬇ 批量下载</button>
+        </div>
+      </div>
+
+      <!-- ===== Shot Cards Grid ===== -->
+      <div class="shot-grid">
+
+        <!-- Shot Card 1 -->
+        <div class="shot-card">
+          <div class="shot-thumb svg-bg">
+            <svg viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="180" height="120" fill="none"/>
+              <circle cx="90" cy="50" r="20" fill="white" opacity="0.08"/>
+              <rect x="60" y="80" width="60" height="6" rx="3" fill="white" opacity="0.1"/>
+            </svg>
+            <span class="shot-number">#1</span>
+            <span class="shot-dur">5秒</span>
+          </div>
+          <div class="shot-body">
+            <div class="shot-time-range">00:00 - 00:05</div>
+            <div class="shot-desc">产品外包装展示，白色背景下的护肤品瓶身，光影效果柔和。</div>
+            <div class="shot-tags" data-shot-id="1">
+              <span class="shot-tag ai">#产品</span>
+              <span class="shot-tag ai">#展示</span>
+              <span class="shot-tag ai">#特写</span>
+              <span class="shot-tag-add" title="编辑标签" onclick="openTagEditor(1)">+ 标签</span>
+            </div>
+
+            <div class="tag-editor" id="tagEditor-1">
+              <div class="te-title">
+                <span>编辑标签</span>
+                <span class="shot-tag" style="padding:2px 6px;" onclick="closeTagEditor(1)">关闭</span>
+              </div>
+              <input type="text" placeholder="输入标签回车添加（如：痛点/开箱/对比）" onkeydown="handleTagInputKey(event, 1)" />
+              <div class="tag-suggest" data-shot-id="1"></div>
+              <div class="te-actions">
+                <button class="btn btn-outline btn-xs" onclick="closeTagEditor(1)">取消</button>
+                <button class="btn btn-primary btn-xs" onclick="closeTagEditor(1)">完成</button>
+              </div>
+            </div>
+            <div class="shot-footer">
+              <label class="flex items-center gap-8" style="cursor:pointer;">
+                <input type="checkbox" class="cb">
+              </label>
+              <div class="shot-actions">
+                <a href="08-分镜详情页.html" class="link">详情 →</a>
+                <button class="btn btn-primary btn-xs">⬇ 下载</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shot Card 2 -->
+        <div class="shot-card">
+          <div class="shot-thumb svg-bg">
+            <svg viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="180" height="120" fill="none"/>
+              <ellipse cx="90" cy="55" rx="35" ry="25" fill="white" opacity="0.06"/>
+              <rect x="50" y="85" width="80" height="5" rx="2.5" fill="white" opacity="0.1"/>
+            </svg>
+            <span class="shot-number">#2</span>
+            <span class="shot-dur">8秒</span>
+          </div>
+          <div class="shot-body">
+            <div class="shot-time-range">00:05 - 00:13</div>
+            <div class="shot-desc">手部涂抹质地展示，近景拍摄产品在手背上的延展性和吸收效果。</div>
+            <div class="shot-tags" data-shot-id="2">
+              <span class="shot-tag ai">#涂抹</span>
+              <span class="shot-tag ai">#质地</span>
+              <span class="shot-tag ai">#手部</span>
+              <span class="shot-tag-add" title="编辑标签" onclick="openTagEditor(2)">+ 标签</span>
+            </div>
+
+            <div class="tag-editor" id="tagEditor-2">
+              <div class="te-title">
+                <span>编辑标签</span>
+                <span class="shot-tag" style="padding:2px 6px;" onclick="closeTagEditor(2)">关闭</span>
+              </div>
+              <input type="text" placeholder="输入标签回车添加（如：痛点/开箱/对比）" onkeydown="handleTagInputKey(event, 2)" />
+              <div class="tag-suggest" data-shot-id="2"></div>
+              <div class="te-actions">
+                <button class="btn btn-outline btn-xs" onclick="closeTagEditor(2)">取消</button>
+                <button class="btn btn-primary btn-xs" onclick="closeTagEditor(2)">完成</button>
+              </div>
+            </div>
+            <div class="shot-footer">
+              <label class="flex items-center gap-8" style="cursor:pointer;">
+                <input type="checkbox" class="cb">
+              </label>
+              <div class="shot-actions">
+                <a href="08-分镜详情页.html" class="link">详情 →</a>
+                <button class="btn btn-primary btn-xs">⬇ 下载</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shot Card 3 -->
+        <div class="shot-card">
+          <div class="shot-thumb svg-bg">
+            <svg viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="180" height="120" fill="none"/>
+              <circle cx="70" cy="45" r="15" fill="white" opacity="0.07"/>
+              <circle cx="110" cy="55" r="12" fill="white" opacity="0.05"/>
+              <rect x="40" y="80" width="100" height="5" rx="2.5" fill="white" opacity="0.1"/>
+            </svg>
+            <span class="shot-number">#3</span>
+            <span class="shot-dur">5秒</span>
+          </div>
+          <div class="shot-body">
+            <div class="shot-time-range">00:13 - 00:18</div>
+            <div class="shot-desc">女生照镜子哭泣，表情痛苦，室内卧室场景，近景特写面部表情。</div>
+            <div class="shot-tags" data-shot-id="3">
+              <span class="shot-tag ai">#痛点</span>
+              <span class="shot-tag ai">#哭泣</span>
+              <span class="shot-tag ai">#镜子</span>
+              <span class="shot-tag ai">#室内</span>
+              <span class="shot-tag-add" title="编辑标签" onclick="openTagEditor(3)">+ 标签</span>
+            </div>
+
+            <div class="tag-editor" id="tagEditor-3">
+              <div class="te-title">
+                <span>编辑标签</span>
+                <span class="shot-tag" style="padding:2px 6px;" onclick="closeTagEditor(3)">关闭</span>
+              </div>
+              <input type="text" placeholder="输入标签回车添加（如：痛点/开箱/对比）" onkeydown="handleTagInputKey(event, 3)" />
+              <div class="tag-suggest" data-shot-id="3"></div>
+              <div class="te-actions">
+                <button class="btn btn-outline btn-xs" onclick="closeTagEditor(3)">取消</button>
+                <button class="btn btn-primary btn-xs" onclick="closeTagEditor(3)">完成</button>
+              </div>
+            </div>
+            <div class="shot-footer">
+              <label class="flex items-center gap-8" style="cursor:pointer;">
+                <input type="checkbox" class="cb">
+              </label>
+              <div class="shot-actions">
+                <a href="08-分镜详情页.html" class="link">详情 →</a>
+                <button class="btn btn-primary btn-xs">⬇ 下载</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shot Card 4 -->
+        <div class="shot-card">
+          <div class="shot-thumb svg-bg">
+            <svg viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="180" height="120" fill="none"/>
+              <rect x="55" y="30" width="70" height="50" rx="6" fill="white" opacity="0.06"/>
+              <rect x="60" y="90" width="60" height="5" rx="2.5" fill="white" opacity="0.1"/>
+            </svg>
+            <span class="shot-number">#4</span>
+            <span class="shot-dur">4秒</span>
+          </div>
+          <div class="shot-body">
+            <div class="shot-time-range">00:18 - 00:22</div>
+            <div class="shot-desc">使用前后对比画面，分屏展示皮肤状态变化效果。</div>
+            <div class="shot-tags" data-shot-id="4">
+              <span class="shot-tag ai">#对比</span>
+              <span class="shot-tag ai">#效果</span>
+              <span class="shot-tag ai">#分屏</span>
+              <span class="shot-tag-add" title="编辑标签" onclick="openTagEditor(4)">+ 标签</span>
+            </div>
+
+            <div class="tag-editor" id="tagEditor-4">
+              <div class="te-title">
+                <span>编辑标签</span>
+                <span class="shot-tag" style="padding:2px 6px;" onclick="closeTagEditor(4)">关闭</span>
+              </div>
+              <input type="text" placeholder="输入标签回车添加（如：痛点/开箱/对比）" onkeydown="handleTagInputKey(event, 4)" />
+              <div class="tag-suggest" data-shot-id="4"></div>
+              <div class="te-actions">
+                <button class="btn btn-outline btn-xs" onclick="closeTagEditor(4)">取消</button>
+                <button class="btn btn-primary btn-xs" onclick="closeTagEditor(4)">完成</button>
+              </div>
+            </div>
+            <div class="shot-footer">
+              <label class="flex items-center gap-8" style="cursor:pointer;">
+                <input type="checkbox" class="cb">
+              </label>
+              <div class="shot-actions">
+                <a href="08-分镜详情页.html" class="link">详情 →</a>
+                <button class="btn btn-primary btn-xs">⬇ 下载</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// 项目内标签库（demo静态数据）
+const PROJECT_TAG_LIBRARY = [
+  '#产品', '#展示', '#特写', '#涂抹', '#质地', '#手部', '#痛点', '#哭泣', '#镜子', '#室内', '#对比', '#效果', '#分屏',
+  '#开箱', '#UGC', '#氛围', '#晨间', '#温馨', '#引导', '#手势', '#下单'
+];
+
+function normalizeTag(text) {
+  if (!text) return '';
+  let t = text.trim();
+  if (!t) return '';
+  if (!t.startsWith('#')) t = '#' + t;
+  return t;
+}
+
+function getSelectedFilterTags() {
+  return Array.from(document.querySelectorAll('.shot-filter-bar .shot-tag.selected[data-filter-tag]'))
+    .map(el => el.getAttribute('data-filter-tag'))
+    .filter(Boolean);
+}
+
+function updateSelectedTagCount() {
+  const el = document.getElementById('selectedTagCount');
+  if (!el) return;
+  el.textContent = String(getSelectedFilterTags().length);
+}
+
+function applyTagFilters() {
+  const selected = getSelectedFilterTags();
+  const cards = document.querySelectorAll('.shot-card');
+  cards.forEach(card => {
+    const tags = Array.from(card.querySelectorAll('.shot-tags .shot-tag'))
+      .map(t => t.textContent.trim())
+      .filter(t => t && t.startsWith('#'));
+    const hit = selected.every(s => tags.includes(s));
+    card.style.display = hit ? '' : 'none';
+  });
+}
+
+function openTagEditor(shotId) {
+  const editor = document.getElementById('tagEditor-' + shotId);
+  if (!editor) return;
+  editor.classList.add('open');
+  renderSuggestions(shotId);
+  const input = editor.querySelector('input');
+  if (input) input.focus();
+}
+
+function closeTagEditor(shotId) {
+  const editor = document.getElementById('tagEditor-' + shotId);
+  if (!editor) return;
+  editor.classList.remove('open');
+}
+
+function addTagToShot(shotId, tagText, source) {
+  const tag = normalizeTag(tagText);
+  if (!tag) return;
+  const wrap = document.querySelector('.shot-tags[data-shot-id="' + shotId + '"]');
+  if (!wrap) return;
+
+  const existing = Array.from(wrap.querySelectorAll('.shot-tag')).some(el => el.textContent.trim() === tag);
+  if (existing) return;
+
+  const addBtn = wrap.querySelector('.shot-tag-add');
+  const el = document.createElement('span');
+  el.className = 'shot-tag' + (source === 'ai' ? ' ai' : '');
+  el.textContent = tag;
+  el.title = '点击删除';
+  el.onclick = function() {
+    el.remove();
+    applyTagFilters();
+  };
+
+  if (addBtn) wrap.insertBefore(el, addBtn);
+  else wrap.appendChild(el);
+}
+
+function handleTagInputKey(e, shotId) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const tag = normalizeTag(e.target.value);
+    if (!tag) return;
+    addTagToShot(shotId, tag, 'manual');
+    if (!PROJECT_TAG_LIBRARY.includes(tag)) PROJECT_TAG_LIBRARY.unshift(tag);
+    e.target.value = '';
+    renderSuggestions(shotId);
+    applyTagFilters();
+  }
+}
+
+function renderSuggestions(shotId) {
+  const editor = document.getElementById('tagEditor-' + shotId);
+  if (!editor) return;
+  const sg = editor.querySelector('.tag-suggest');
+  const input = editor.querySelector('input');
+  if (!sg || !input) return;
+
+  const kw = input.value.trim();
+  const wrap = document.querySelector('.shot-tags[data-shot-id="' + shotId + '"]');
+  const existing = wrap ? Array.from(wrap.querySelectorAll('.shot-tag')).map(el => el.textContent.trim()) : [];
+
+  const candidates = PROJECT_TAG_LIBRARY
+    .filter(t => !existing.includes(t))
+    .filter(t => !kw || t.includes(kw) || t.replace('#','').includes(kw))
+    .slice(0, 10);
+
+  sg.innerHTML = '';
+  candidates.forEach(t => {
+    const el = document.createElement('span');
+    el.className = 'sg';
+    el.textContent = t;
+    el.onclick = function() {
+      addTagToShot(shotId, t, 'manual');
+      applyTagFilters();
+      renderSuggestions(shotId);
+    };
+    sg.appendChild(el);
+  });
+
+  input.oninput = function() { renderSuggestions(shotId); };
+}
+
+(function initTagFilterBar() {
+  const bar = document.getElementById('shotFilterBar');
+  if (!bar) return;
+
+  bar.addEventListener('click', function(e) {
+    const t = e.target;
+    if (!(t instanceof HTMLElement)) return;
+
+    if (t.id === 'clearTagFilters') {
+      bar.querySelectorAll('.shot-tag.selected').forEach(el => el.classList.remove('selected'));
+      const first = bar.querySelector('.shot-tag[data-filter-tag]');
+      if (first) first.classList.add('selected');
+      updateSelectedTagCount();
+      applyTagFilters();
+      return;
+    }
+
+    if (t.classList.contains('shot-tag') && t.hasAttribute('data-filter-tag')) {
+      t.classList.toggle('selected');
+      updateSelectedTagCount();
+      applyTagFilters();
+    }
+  });
+
+  updateSelectedTagCount();
+  applyTagFilters();
+})();
+
+(function initBatchTag() {
+  const btn = document.getElementById('batchTagBtn');
+  if (!btn) return;
+  btn.addEventListener('click', function() {
+    const selectedShots = Array.from(document.querySelectorAll('.shot-card .cb:checked'))
+      .map(cb => cb.closest('.shot-card'))
+      .filter(Boolean)
+      .map(card => {
+        const tags = card.querySelector('.shot-tags');
+        return tags ? tags.getAttribute('data-shot-id') : null;
+      })
+      .filter(Boolean);
+
+    if (selectedShots.length === 0) {
+      alert('请先勾选分镜，再批量打标');
+      return;
+    }
+
+    const input = prompt('批量添加标签（支持逗号分隔，如：痛点,特写）');
+    if (!input) return;
+
+    input.split(/,|，/).map(s => s.trim()).filter(Boolean).forEach(tag => {
+      selectedShots.forEach(id => addTagToShot(id, tag, 'manual'));
+    });
+    applyTagFilters();
+    alert('已为 ' + selectedShots.length + ' 个分镜批量添加标签');
+  });
+})();
+</script>
+</body>
+</html>

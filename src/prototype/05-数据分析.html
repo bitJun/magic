@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数据分析 - 大魔王智能素材管理系统</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── Data Analysis Page Enhancements ── */
+
+    /* AI Insight Strip */
+    .ai-insights {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .ai-insight-card {
+      background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(236,72,153,0.04));
+      border: 1px solid rgba(139,92,246,0.12);
+      border-radius: var(--radius-card);
+      padding: 16px 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      transition: all var(--transition-fast);
+    }
+    .ai-insight-card:hover {
+      border-color: rgba(139,92,246,0.25);
+      background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(236,72,153,0.06));
+    }
+    .ai-insight-card .aic-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .ai-insight-card .aic-body {
+      flex: 1;
+      min-width: 0;
+    }
+    .ai-insight-card .aic-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .ai-insight-card .aic-value {
+      font-size: 13px;
+      color: var(--text-heading);
+      line-height: 1.5;
+    }
+    .ai-insight-card .aic-value .highlight {
+      color: var(--accent-light);
+      font-weight: 700;
+    }
+
+    /* Chart section enhancement */
+    .chart-section {
+      position: relative;
+      overflow: hidden;
+    }
+    .chart-section::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(139,92,246,0.3), transparent);
+    }
+
+    /* Rankings enhancement */
+    .rankings-section {
+      position: relative;
+      overflow: hidden;
+    }
+    .rankings-section::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(139,92,246,0.3), transparent);
+    }
+    .rank-medal { font-size: 20px; }
+    .rank-number {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(139,92,246,0.1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .download-count {
+      font-weight: 700;
+      color: var(--text-heading);
+      font-size: 15px;
+    }
+
+    /* Team card enhancement */
+    .team-card {
+      position: relative;
+      overflow: hidden;
+    }
+    .team-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(180deg, rgba(139,92,246,0.04) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .team-avatar {
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3), 0 0 0 3px rgba(139,92,246,0.12);
+      position: relative;
+      z-index: 1;
+    }
+    .team-progress-section {
+      width: 100%;
+      margin-top: 10px;
+      padding: 0 8px;
+    }
+    .team-progress-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .team-progress-row .tp-label {
+      font-size: 11px;
+      color: var(--text-dim-alt);
+      width: 46px;
+      flex-shrink: 0;
+    }
+    .team-progress-row .tp-bar {
+      flex: 1;
+      height: 4px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .team-progress-row .tp-bar .tp-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.6s ease;
+    }
+    .team-progress-row .tp-value {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-heading);
+      width: 32px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* Section subtitle */
+    .section-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .ai-insights {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">✦</div>
+      <div class="logo-text">
+        <span class="brand">大魔王</span>
+        <span class="subtitle">智能素材管理系统</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">核心功能</div>
+        <a href="01-智能搜索.html" class="nav-item">
+          <span class="nav-icon">🔍</span> 智能搜索
+        </a>
+        <a href="02-素材库管理.html" class="nav-item">
+          <span class="nav-icon">📦</span> 素材库
+        </a>
+        <a href="03-项目管理.html" class="nav-item">
+          <span class="nav-icon">📁</span> 项目管理
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">智能工具</div>
+        <a href="04-人脸识别库.html" class="nav-item">
+          <span class="nav-icon">👤</span> 人脸识别库
+        </a>
+        <a href="05-数据分析.html" class="nav-item active">
+          <span class="nav-icon">📊</span> 数据分析
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">系统</div>
+        <a href="20-回收站.html" class="nav-item">
+          <span class="nav-icon">🗑️</span> 回收站
+        </a>
+        <a href="15-设置页面.html" class="nav-item">
+          <span class="nav-icon">⚙️</span> 设置
+        </a>
+      </div>
+    </nav>
+
+    <a href="16-用户个人信息.html" class="sidebar-user">
+      <div class="user-avatar">张</div>
+      <div class="user-info">
+        <span class="user-name">张三</span>
+        <span class="user-role">管理员</span>
+      </div>
+    </a>
+  </aside>
+
+  <!-- ===== Main Content ===== -->
+  <main class="main-content">
+
+    <!-- Page Header -->
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">数据分析</h1>
+        <div class="page-subtitle">实时洞察 · 素材效能追踪 · 团队活跃度</div>
+      </div>
+      <div class="page-actions">
+        <div class="time-range">
+          <button class="range-btn">今日</button>
+          <button class="range-btn active">本周</button>
+          <button class="range-btn">本月</button>
+          <button class="range-btn">本季</button>
+        </div>
+        <select class="filter-select" style="margin: 0" id="globalProjectFilter" onchange="applyProjectFilter()">
+          <option value="all">全部项目</option>
+          <option value="skincare-a">护肤品A系列</option>
+          <option value="lipstick">口红系列</option>
+          <option value="eyeshadow">眼影系列</option>
+        </select>
+        <button class="btn btn-primary" onclick="openModal('exportModal')">📤 导出报表</button>
+      </div>
+    </header>
+
+    <div class="content-area">
+
+      <!-- Stat Cards -->
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-label">总素材数</div>
+          <div class="stat-value">2,345</div>
+          <span class="stat-change up">↑ 156 (7.1%)</span>
+          <div class="stat-icon purple">📦</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">总分镜数</div>
+          <div class="stat-value">15,678</div>
+          <span class="stat-change up">↑ 1,234 (8.5%)</span>
+          <div class="stat-icon blue">🎬</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">存储空间</div>
+          <div class="stat-value">4.95 TB</div>
+          <div class="stat-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 15%"></div>
+            </div>
+            <div class="progress-text">已用 15% / 总计 32TB</div>
+          </div>
+          <div class="stat-icon green">💾</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">素材复用率</div>
+          <div class="stat-value">78.5%</div>
+          <span class="stat-change up">↑ 12% · 目标 80%</span>
+          <div class="stat-icon pink">♻️</div>
+        </div>
+      </div>
+
+      <!-- AI Insights -->
+      <div class="ai-insights">
+        <div class="ai-insight-card">
+          <div class="aic-icon" style="background:rgba(52,211,153,0.12);">📈</div>
+          <div class="aic-body">
+            <div class="aic-title">✦ 效率洞察</div>
+            <div class="aic-value">本周下载增长 <span class="highlight">+23.5%</span>，「护肤品A」素材复用率最高</div>
+          </div>
+        </div>
+        <div class="ai-insight-card">
+          <div class="aic-icon" style="background:rgba(251,191,36,0.12);">🎯</div>
+          <div class="aic-body">
+            <div class="aic-title">✦ 热度趋势</div>
+            <div class="aic-value">「痛点镜头」标签搜索量飙升 <span class="highlight">3倍</span>，建议补充相关素材</div>
+          </div>
+        </div>
+        <div class="ai-insight-card">
+          <div class="aic-icon" style="background:rgba(96,165,250,0.12);">👥</div>
+          <div class="aic-body">
+            <div class="aic-title">✦ 团队动态</div>
+            <div class="aic-value">张三 上传最活跃（<span class="highlight">42个</span>），李四 下载最频繁（<span class="highlight">189次</span>）。赵六 <span class="highlight">1周</span>未登录，请关注</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trend Chart -->
+      <div class="chart-section">
+        <div class="chart-header">
+          <h3 class="chart-title">下载趋势</h3>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <span class="legend-dot" style="background: #3b82f6"></span> 下载次数
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot" style="background: #22c55e"></span> 搜索次数
+            </div>
+          </div>
+        </div>
+        <div class="chart-box">
+          <svg viewBox="0 0 800 240" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <!-- Grid lines -->
+            <line x1="50" y1="20" x2="780" y2="20" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+            <line x1="50" y1="65" x2="780" y2="65" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+            <line x1="50" y1="110" x2="780" y2="110" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+            <line x1="50" y1="155" x2="780" y2="155" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+            <line x1="50" y1="200" x2="780" y2="200" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+            <!-- Y Axis labels -->
+            <text x="40" y="24" text-anchor="end" fill="#888" font-size="11">500</text>
+            <text x="40" y="69" text-anchor="end" fill="#888" font-size="11">400</text>
+            <text x="40" y="114" text-anchor="end" fill="#888" font-size="11">300</text>
+            <text x="40" y="159" text-anchor="end" fill="#888" font-size="11">200</text>
+            <text x="40" y="204" text-anchor="end" fill="#888" font-size="11">100</text>
+
+            <!-- X Axis labels -->
+            <text x="130" y="225" text-anchor="middle" fill="#888" font-size="11">1/29</text>
+            <text x="222" y="225" text-anchor="middle" fill="#888" font-size="11">1/30</text>
+            <text x="314" y="225" text-anchor="middle" fill="#888" font-size="11">1/31</text>
+            <text x="406" y="225" text-anchor="middle" fill="#888" font-size="11">2/1</text>
+            <text x="498" y="225" text-anchor="middle" fill="#888" font-size="11">2/2</text>
+            <text x="590" y="225" text-anchor="middle" fill="#888" font-size="11">2/3</text>
+            <text x="682" y="225" text-anchor="middle" fill="#888" font-size="11">2/4</text>
+            <text x="760" y="225" text-anchor="middle" fill="#888" font-size="11">2/6</text>
+
+            <!-- Download line (blue) - gradient fill area -->
+            <defs>
+              <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="greenGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#22c55e" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+              </linearGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feMerge>
+                  <feMergeNode in="blur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- Blue area fill -->
+            <path d="M130,130 L222,110 L314,90 L406,100 L498,65 L590,75 L682,50 L760,40 L760,200 L130,200 Z" fill="url(#blueGrad)"/>
+            <!-- Blue line -->
+            <polyline points="130,130 222,110 314,90 406,100 498,65 590,75 682,50 760,40" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linejoin="round" filter="url(#glow)"/>
+            <!-- Blue dots -->
+            <circle cx="130" cy="130" r="4" fill="#3b82f6" stroke="#0c0c14" stroke-width="2"/>
+            <circle cx="222" cy="110" r="4" fill="#3b82f6" stroke="#0c0c14" stroke-width="2"/>
+            <circle cx="314" cy="90" r="4" fill="#3b82f6" stroke="#0c0c14" stroke-width="2"/>
+            <circle cx="406" cy="100" r="4" fill="#3b82f6" stroke="#0c0c14" stroke-width="2"/>
+            <circle cx="498" cy="65" r="4" fill="#3b82f6" stroke="#0c0c14" stroke-width="2"/>
+            <circle cx="590" cy="75" r="4" fill="#3b82f6" stroke="#0c0c14" stroke-width="2"/>
+            <circle cx="682" cy="50" r="4" fill="#3b82f6" stroke="#0c0c14" stroke-width="2"/>
+            <circle cx="760" cy="40" r="4" fill="#3b82f6" stroke="#0c0c14" stroke-width="2"/>
+
+            <!-- Green area fill -->
+            <path d="M130,160 L222,150 L314,140 L406,145 L498,120 L590,110 L682,95 L760,85 L760,200 L130,200 Z" fill="url(#greenGrad)"/>
+            <!-- Green line -->
+            <polyline points="130,160 222,150 314,140 406,145 498,120 590,110 682,95 760,85" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linejoin="round" filter="url(#glow)"/>
+            <!-- Green dots -->
+            <circle cx="130" cy="160" r="4" fill="#22c55e" stroke="#0c0c14" stroke-width="2"/>
+            <circle cx="222" cy="150" r="4" fill="#22c55e" stroke="#0c0c14" stroke-width="2"/>
+            <circle cx="314" cy="140" r="4" fill="#22c55e" stroke="#0c0c14" stroke-width="2"/>
+            <circle cx="406" cy="145" r="4" fill="#22c55e" stroke="#0c0c14" stroke-width="2"/>
+            <circle cx="498" cy="120" r="4" fill="#22c55e" stroke="#0c0c14" stroke-width="2"/>
+            <circle cx="590" cy="110" r="4" fill="#22c55e" stroke="#0c0c14" stroke-width="2"/>
+            <circle cx="682" cy="95" r="4" fill="#22c55e" stroke="#0c0c14" stroke-width="2"/>
+            <circle cx="760" cy="85" r="4" fill="#22c55e" stroke="#0c0c14" stroke-width="2"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Rankings Table -->
+      <div class="rankings-section">
+        <div class="rankings-header">
+          <h3 class="rankings-title">热门分镜排行榜 TOP 10</h3>
+          <span style="font-size: 12px; color: var(--text-muted)">本周数据</span>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width: 60px">排名</th>
+              <th style="width: 80px">缩略图</th>
+              <th>AI 描述</th>
+              <th>标签</th>
+              <th style="width: 100px">下载次数</th>
+              <th>最近下载</th>
+              <th style="width: 80px">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rank 1 -->
+            <tr>
+              <td class="text-center"><span class="rank-medal">🥇</span></td>
+              <td>
+                <div class="preview-thumb">
+                  <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="60" height="40" fill="#1a1a2e"/>
+                    <circle cx="30" cy="15" r="8" fill="#fbbf24" opacity="0.6"/>
+                    <polygon points="5,38 20,20 35,30 55,15 55,38" fill="#8b5cf6" opacity="0.4"/>
+                  </svg>
+                </div>
+              </td>
+              <td><div class="ai-desc">城市天际线日落场景，高楼剪影与橙色晚霞形成强烈对比，航拍俯瞰视角</div></td>
+              <td>
+                <div class="tags">
+                  <span class="tag">城市</span>
+                  <span class="tag">日落</span>
+                  <span class="tag">航拍</span>
+                </div>
+              </td>
+              <td><span class="download-count">487</span></td>
+              <td style="font-size: 12px; color: var(--text-muted)">2025-02-06 18:30</td>
+              <td><a href="08-分镜详情页.html" class="btn btn-ghost btn-xs">查看</a></td>
+            </tr>
+            <!-- Rank 2 -->
+            <tr>
+              <td class="text-center"><span class="rank-medal">🥈</span></td>
+              <td>
+                <div class="preview-thumb">
+                  <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="60" height="40" fill="#1a1a2e"/>
+                    <circle cx="22" cy="18" r="7" fill="#ec4899" opacity="0.5"/>
+                    <rect x="35" y="10" width="18" height="22" rx="3" fill="#3b82f6" opacity="0.3"/>
+                  </svg>
+                </div>
+              </td>
+              <td><div class="ai-desc">模特面部特写，柔和的侧光照明，表情自然微笑，背景虚化处理</div></td>
+              <td>
+                <div class="tags">
+                  <span class="tag">人物</span>
+                  <span class="tag">特写</span>
+                  <span class="tag">模特</span>
+                </div>
+              </td>
+              <td><span class="download-count">423</span></td>
+              <td style="font-size: 12px; color: var(--text-muted)">2025-02-06 16:15</td>
+              <td><a href="08-分镜详情页.html" class="btn btn-ghost btn-xs">查看</a></td>
+            </tr>
+            <!-- Rank 3 -->
+            <tr>
+              <td class="text-center"><span class="rank-medal">🥉</span></td>
+              <td>
+                <div class="preview-thumb">
+                  <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="60" height="40" fill="#1a1a2e"/>
+                    <rect x="8" y="12" width="44" height="20" rx="4" fill="#22c55e" opacity="0.2"/>
+                    <rect x="15" y="16" width="30" height="12" rx="2" fill="#a78bfa" opacity="0.4"/>
+                  </svg>
+                </div>
+              </td>
+              <td><div class="ai-desc">产品展示台上的智能手机，360度旋转展示，纯白背景，高光泽质感</div></td>
+              <td>
+                <div class="tags">
+                  <span class="tag">产品</span>
+                  <span class="tag">展示</span>
+                  <span class="tag">科技</span>
+                </div>
+              </td>
+              <td><span class="download-count">389</span></td>
+              <td style="font-size: 12px; color: var(--text-muted)">2025-02-06 14:50</td>
+              <td><a href="08-分镜详情页.html" class="btn btn-ghost btn-xs">查看</a></td>
+            </tr>
+            <!-- Rank 4 -->
+            <tr>
+              <td class="text-center"><div class="rank-number">4</div></td>
+              <td>
+                <div class="preview-thumb">
+                  <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="60" height="40" fill="#1a1a2e"/>
+                    <polygon points="30,8 50,35 10,35" fill="#f59e0b" opacity="0.3"/>
+                    <circle cx="30" cy="22" r="6" fill="#ec4899" opacity="0.4"/>
+                  </svg>
+                </div>
+              </td>
+              <td><div class="ai-desc">团队会议室头脑风暴场景，白板上贴满彩色便签，多人协作讨论</div></td>
+              <td>
+                <div class="tags">
+                  <span class="tag">办公</span>
+                  <span class="tag">团队</span>
+                </div>
+              </td>
+              <td><span class="download-count">356</span></td>
+              <td style="font-size: 12px; color: var(--text-muted)">2025-02-05 20:10</td>
+              <td><a href="08-分镜详情页.html" class="btn btn-ghost btn-xs">查看</a></td>
+            </tr>
+            <!-- Rank 5 -->
+            <tr>
+              <td class="text-center"><div class="rank-number">5</div></td>
+              <td>
+                <div class="preview-thumb">
+                  <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="60" height="40" fill="#1a1a2e"/>
+                    <ellipse cx="30" cy="28" rx="25" ry="8" fill="#06b6d4" opacity="0.2"/>
+                    <rect x="22" y="8" width="16" height="22" rx="2" fill="#8b5cf6" opacity="0.4"/>
+                  </svg>
+                </div>
+              </td>
+              <td><div class="ai-desc">美食特写微距摄影，精致摆盘的甜点，浅景深柔焦效果，暖色调灯光</div></td>
+              <td>
+                <div class="tags">
+                  <span class="tag">美食</span>
+                  <span class="tag">特写</span>
+                  <span class="tag">微距</span>
+                </div>
+              </td>
+              <td><span class="download-count">312</span></td>
+              <td style="font-size: 12px; color: var(--text-muted)">2025-02-05 11:25</td>
+              <td><a href="08-分镜详情页.html" class="btn btn-ghost btn-xs">查看</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Team Stats (优化：增加项目穿透提示 + 最近登录) -->
+      <div class="team-section">
+        <h3 class="team-title">团队使用统计 <span id="teamFilterHint" style="font-size:13px;font-weight:500;color:var(--text-tag);margin-left:8px;"></span></h3>
+        <div class="section-subtitle">本周团队成员活跃数据一览</div>
+        <div class="team-grid">
+          <div class="team-card">
+            <div class="team-avatar" style="background: linear-gradient(135deg, #8b5cf6, #ec4899)">张</div>
+            <div class="team-name">张三</div>
+            <div class="team-role">项目总监</div>
+            <div class="team-stats">
+              <div class="team-stat-item">
+                <div class="ts-value">234</div>
+                <div class="ts-label">下载次数</div>
+              </div>
+              <div class="team-stat-item">
+                <div class="ts-value">567</div>
+                <div class="ts-label">搜索次数</div>
+              </div>
+              <div class="team-stat-item">
+                <div class="ts-value" style="font-size:11px;color:var(--text-dim-alt);">2小时前</div>
+                <div class="ts-label">最近登录</div>
+              </div>
+            </div>
+            <div class="team-progress-section">
+              <div class="team-progress-row">
+                <span class="tp-label">上传</span>
+                <div class="tp-bar"><div class="tp-fill" style="width:85%;background:linear-gradient(90deg,#8b5cf6,#ec4899);"></div></div>
+                <span class="tp-value">42</span>
+              </div>
+              <div class="team-progress-row">
+                <span class="tp-label">下载</span>
+                <div class="tp-bar"><div class="tp-fill" style="width:100%;background:linear-gradient(90deg,#3b82f6,#06b6d4);"></div></div>
+                <span class="tp-value">234</span>
+              </div>
+            </div>
+            <!-- 【新增】最近登录时间 -->
+            <div style="margin-top:8px;padding:8px 12px;background:rgba(15,15,25,0.4);border-radius:6px;border:1px solid var(--border-normal);">
+              <div style="font-size:11px;color:var(--text-dim-alt);margin-bottom:2px;">最近登录</div>
+              <div style="font-size:12px;font-weight:600;color:var(--text-heading);">2小时前</div>
+            </div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar" style="background: linear-gradient(135deg, #3b82f6, #06b6d4)">李</div>
+            <div class="team-name">李四</div>
+            <div class="team-role">剪辑师</div>
+            <div class="team-stats">
+              <div class="team-stat-item">
+                <div class="ts-value">189</div>
+                <div class="ts-label">下载次数</div>
+              </div>
+              <div class="team-stat-item">
+                <div class="ts-value">423</div>
+                <div class="ts-label">搜索次数</div>
+              </div>
+              <div class="team-stat-item">
+                <div class="ts-value" style="font-size:11px;color:var(--text-dim-alt);">1天前</div>
+                <div class="ts-label">最近登录</div>
+              </div>
+            </div>
+            <div class="team-progress-section">
+              <div class="team-progress-row">
+                <span class="tp-label">上传</span>
+                <div class="tp-bar"><div class="tp-fill" style="width:52%;background:linear-gradient(90deg,#3b82f6,#06b6d4);"></div></div>
+                <span class="tp-value">26</span>
+              </div>
+              <div class="team-progress-row">
+                <span class="tp-label">下载</span>
+                <div class="tp-bar"><div class="tp-fill" style="width:81%;background:linear-gradient(90deg,#3b82f6,#06b6d4);"></div></div>
+                <span class="tp-value">189</span>
+              </div>
+            </div>
+            <div style="margin-top:8px;padding:8px 12px;background:rgba(15,15,25,0.4);border-radius:6px;border:1px solid var(--border-normal);">
+              <div style="font-size:11px;color:var(--text-dim-alt);margin-bottom:2px;">最近登录</div>
+              <div style="font-size:12px;font-weight:600;color:var(--text-heading);">15分钟前</div>
+            </div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar" style="background: linear-gradient(135deg, #22c55e, #10b981)">王</div>
+            <div class="team-name">王五</div>
+            <div class="team-role">摄影师</div>
+            <div class="team-stats">
+              <div class="team-stat-item">
+                <div class="ts-value">156</div>
+                <div class="ts-label">下载次数</div>
+              </div>
+              <div class="team-stat-item">
+                <div class="ts-value">312</div>
+                <div class="ts-label">搜索次数</div>
+              </div>
+              <div class="team-stat-item">
+                <div class="ts-value" style="font-size:11px;color:var(--text-dim-alt);">3天前</div>
+                <div class="ts-label">最近登录</div>
+              </div>
+            </div>
+            <div class="team-progress-section">
+              <div class="team-progress-row">
+                <span class="tp-label">上传</span>
+                <div class="tp-bar"><div class="tp-fill" style="width:100%;background:linear-gradient(90deg,#22c55e,#10b981);"></div></div>
+                <span class="tp-value">50</span>
+              </div>
+              <div class="team-progress-row">
+                <span class="tp-label">下载</span>
+                <div class="tp-bar"><div class="tp-fill" style="width:67%;background:linear-gradient(90deg,#22c55e,#10b981);"></div></div>
+                <span class="tp-value">156</span>
+              </div>
+            </div>
+            <div style="margin-top:8px;padding:8px 12px;background:rgba(15,15,25,0.4);border-radius:6px;border:1px solid var(--border-normal);">
+              <div style="font-size:11px;color:var(--text-dim-alt);margin-bottom:2px;">最近登录</div>
+              <div style="font-size:12px;font-weight:600;color:var(--text-heading);">昨天 18:30</div>
+            </div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar" style="background: linear-gradient(135deg, #f59e0b, #ef4444)">赵</div>
+            <div class="team-name">赵六</div>
+            <div class="team-role">后期特效</div>
+            <div class="team-stats">
+              <div class="team-stat-item">
+                <div class="ts-value">98</div>
+                <div class="ts-label">下载次数</div>
+              </div>
+              <div class="team-stat-item">
+                <div class="ts-value">245</div>
+                <div class="ts-label">搜索次数</div>
+              </div>
+              <div class="team-stat-item">
+                <div class="ts-value" style="font-size:11px;color:var(--text-dim-alt);">1周前</div>
+                <div class="ts-label">最近登录</div>
+              </div>
+            </div>
+            <div class="team-progress-section">
+              <div class="team-progress-row">
+                <span class="tp-label">上传</span>
+                <div class="tp-bar"><div class="tp-fill" style="width:36%;background:linear-gradient(90deg,#f59e0b,#ef4444);"></div></div>
+                <span class="tp-value">18</span>
+              </div>
+              <div class="team-progress-row">
+                <span class="tp-label">下载</span>
+                <div class="tp-bar"><div class="tp-fill" style="width:42%;background:linear-gradient(90deg,#f59e0b,#ef4444);"></div></div>
+                <span class="tp-value">98</span>
+              </div>
+            </div>
+            <div style="margin-top:8px;padding:8px 12px;background:rgba(15,15,25,0.4);border-radius:6px;border:1px solid rgba(239,68,68,0.2);">
+              <div style="font-size:11px;color:var(--text-dim-alt);margin-bottom:2px;">最近登录</div>
+              <div style="font-size:12px;font-weight:600;color:#f87171;">7天前 ⚠️</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+<!-- ===== Export Report Modal ===== -->
+<div class="modal-overlay" id="exportModal">
+  <div class="modal-inner" style="max-width:520px;width:92%;padding:28px;">
+    <div class="modal-header">
+      <h2 class="modal-title">导出报表</h2>
+      <button class="modal-close" onclick="closeModal('exportModal')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">选择导出格式和数据范围</div>
+
+    <div style="font-size:13px;font-weight:600;color:var(--text-heading);margin-bottom:8px;">导出格式</div>
+    <div style="display:flex;gap:12px;margin-bottom:18px;">
+      <label style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-small);background:rgba(139,92,246,0.1);border:1px solid var(--purple);font-size:13px;color:var(--text-active);cursor:pointer;">
+        <span style="width:14px;height:14px;border-radius:50%;border:2px solid var(--purple);display:flex;align-items:center;justify-content:center;">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--purple);"></span>
+        </span>
+        Excel (.xlsx)
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-small);background:rgba(15,15,25,0.6);border:1px solid var(--border-color);font-size:13px;color:var(--text-body);cursor:pointer;">
+        PDF 报告
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">数据范围</label>
+      <select class="form-select">
+        <option>最近 30 天</option>
+        <option>最近 90 天</option>
+        <option>最近半年</option>
+        <option>全部数据</option>
+      </select>
+    </div>
+
+    <div style="font-size:13px;font-weight:600;color:var(--text-heading);margin-bottom:8px;margin-top:16px;">包含内容</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-body);cursor:pointer;">
+        <span style="width:16px;height:16px;border-radius:4px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;"><path d="M2 6l3 3 5-5"/></svg>
+        </span>
+        核心指标概览
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-body);cursor:pointer;">
+        <span style="width:16px;height:16px;border-radius:4px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;"><path d="M2 6l3 3 5-5"/></svg>
+        </span>
+        趋势分析图表
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-body);cursor:pointer;">
+        <span style="width:16px;height:16px;border-radius:4px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;"><path d="M2 6l3 3 5-5"/></svg>
+        </span>
+        素材排行榜
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-body);cursor:pointer;">
+        <span style="width:16px;height:16px;border-radius:4px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;"><path d="M2 6l3 3 5-5"/></svg>
+        </span>
+        团队活跃度
+      </label>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('exportModal')">取消</button>
+      <button class="btn-primary">导出报表</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.modal-overlay').forEach(function(el) {
+  el.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
+});
+
+// 【新增】项目筛选穿透逻辑
+function applyProjectFilter() {
+  const selector = document.getElementById('globalProjectFilter');
+  const hint = document.getElementById('teamFilterHint');
+  const selected = selector.options[selector.selectedIndex].text;
+  
+  if (selector.value === 'all') {
+    hint.textContent = '';
+  } else {
+    hint.textContent = '（当前仅显示「' + selected + '」数据）';
+  }
+  
+  // 这里在实际开发中会调用API重新加载团队统计数据
+  console.log('项目筛选已穿透到团队统计，当前项目：', selected);
+}
+</script>
+</body>
+</html>

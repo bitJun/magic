@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智能搜索 - 智能素材管理系统</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── Search Page Specific ── */
+
+    /* Enhanced Search Box Sizing */
+    .search-box-inner {
+      height: 64px;
+      padding: 0 12px 0 24px;
+    }
+    .search-box input {
+      font-size: 16px;
+    }
+    .search-btn {
+      height: 48px;
+      padding: 0 32px;
+      font-size: 15px;
+      border-radius: 8px;
+    }
+
+    /* File Preview & Progress */
+    .file-preview-area {
+      background: var(--bg-card);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-card);
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+    .preview-thumb-box {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .preview-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .preview-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .preview-filename {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-heading);
+      margin-bottom: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .progress-container {
+      width: 100%;
+      max-width: 300px;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      width: 0%;
+      transition: width 0.2s linear;
+      border-radius: 2px;
+    }
+    .progress-status {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+    .preview-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .similarity-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      margin-left: auto;
+    }
+
+    /* Workspace guidance box */
+    .workspace-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-normal);
+      border-radius: var(--radius-card);
+      padding: 24px 28px;
+      margin-bottom: 24px;
+    }
+    .workspace-greeting {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-heading);
+      margin-bottom: 18px;
+    }
+    .workspace-row {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .workspace-col {
+      flex: 1;
+      min-width: 200px;
+    }
+    .workspace-col-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 10px;
+    }
+    .workspace-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .workspace-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 8px;
+      background: rgba(139, 92, 246, 0.08);
+      border: 1px solid rgba(139, 92, 246, 0.12);
+      font-size: 12px;
+      color: var(--text-body-alt);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+    .workspace-pill:hover {
+      background: rgba(139, 92, 246, 0.15);
+      border-color: rgba(139, 92, 246, 0.25);
+      color: var(--text-heading);
+    }
+    .workspace-pill .pill-icon {
+      font-size: 13px;
+    }
+    .pending-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .pending-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-body-alt);
+      padding: 4px 0;
+    }
+    .pending-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .pending-dot.purple { background: var(--purple); }
+    .pending-dot.pink { background: var(--pink); }
+
+    /* AI desc in card */
+    .card-ai-desc {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .ai-icon {
+      flex-shrink: 0;
+      width: 20px; height: 20px;
+      border-radius: 5px;
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 1px;
+    }
+    .ai-desc-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Source info */
+    .card-source {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-bottom: 10px;
+    }
+    .card-source-item {
+      font-size: 11px;
+      color: var(--text-dim-alt);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Card meta with face avatar */
+    .card-meta-rich {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-dim-alt);
+      padding-top: 10px;
+      border-top: 1px solid var(--border-normal);
+    }
+    .card-meta-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-meta-avatar {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--gradient-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: #fff;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .card-meta-right {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-dim-alt);
+    }
+
+    /* Hover hint overlay on thumbnail */
+    .thumb-hover-hint {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 6px 12px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.7));
+      font-size: 10px;
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+      z-index: 2;
+    }
+    .card:hover .thumb-hover-hint {
+      opacity: 1;
+    }
+
+    /* SVG thumbnail with pattern */
+    .card-thumb-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Card checkbox */
+    .card-checkbox {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 4;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 32px;
+    }
+    .pagination .page-btn {
+      width: 36px; height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-small);
+      background: var(--bg-card);
+      border: 1px solid var(--border-normal);
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .pagination .page-btn:hover {
+      border-color: var(--border-accent);
+      color: var(--text-heading);
+    }
+    .pagination .page-btn.active {
+      background: var(--gradient-primary);
+      color: #fff;
+      border-color: transparent;
+      font-weight: 700;
+    }
+    .pagination .page-btn.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .pagination .page-ellipsis {
+      color: var(--text-dim);
+      font-size: 14px;
+      padding: 0 4px;
+    }
+
+    /* AI analysis time badge */
+    .ai-time-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--text-tag);
+      margin-left: 12px;
+    }
+    .ai-time-badge .ai-spark {
+      font-size: 11px;
+    }
+
+    /* ── Inline Project Dropdown ── */
+    .project-selector-wrapper {
+      position: relative;
+    }
+    .project-selector-wrapper .dropdown-panel {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 300px;
+      background: rgba(15, 15, 25, 0.98);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-card);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.1);
+      overflow: hidden;
+      z-index: 100;
+      display: none;
+    }
+    .project-selector-wrapper .dropdown-panel.open {
+      display: block;
+    }
+    .dropdown-search {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-normal);
+    }
+    .dropdown-search input {
+      width: 100%;
+      padding: 8px 12px 8px 32px;
+      background: rgba(15, 15, 25, 0.6);
+      border: 1px solid var(--border-normal);
+      border-radius: var(--radius-small);
+      color: var(--text-heading);
+      font-size: 13px;
+      transition: border-color var(--transition-fast);
+    }
+    .dropdown-search input:focus {
+      border-color: var(--border-accent);
+      outline: none;
+    }
+    .dropdown-search input::placeholder {
+      color: var(--text-dim-alt);
+    }
+    .search-input-wrapper {
+      position: relative;
+    }
+    .search-input-wrapper svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--text-dim-alt);
+      pointer-events: none;
+    }
+    .dropdown-list {
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--text-body);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+    .dropdown-item:hover {
+      background: rgba(139, 92, 246, 0.06);
+    }
+    .dropdown-item.active {
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--text-active);
+    }
+    .dropdown-item .check-icon {
+      width: 16px;
+      flex-shrink: 0;
+      color: var(--purple);
+      opacity: 0;
+    }
+    .dropdown-item.active .check-icon {
+      opacity: 1;
+    }
+    .dropdown-item .project-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dropdown-item .project-name {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .dropdown-item .project-count {
+      font-size: 11px;
+      color: var(--text-dim-alt);
+      flex-shrink: 0;
+    }
+    .section-label {
+      padding: 10px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .dropdown-divider {
+      height: 1px;
+      background: var(--border-normal);
+      margin: 4px 0;
+    }
+    .dropdown-footer {
+      padding: 10px 16px;
+      border-top: 1px solid var(--border-normal);
+    }
+    .dropdown-footer a {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-tag);
+      cursor: pointer;
+      transition: color var(--transition-fast);
+      text-decoration: none;
+    }
+    .dropdown-footer a:hover {
+      color: #c4b5fd;
+    }
+    /* Backdrop to close dropdown */
+    .dropdown-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      display: none;
+    }
+    .dropdown-backdrop.open {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- ═══════════════ Sidebar ═══════════════ -->
+    <aside class="sidebar">
+      <!-- Logo -->
+      <div class="sidebar-logo">
+        <div class="logo-icon">✦</div>
+        <span class="logo-text">大魔王</span>
+      </div>
+
+      <!-- Navigation -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">核心功能</div>
+        <a href="01-智能搜索.html" class="nav-item active">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            </svg>
+          </span>
+          <span>智能搜索</span>
+        </a>
+        <a href="02-素材库管理.html" class="nav-item">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+          </span>
+          <span>素材库</span>
+          <span class="nav-badge">128</span>
+        </a>
+        <a href="03-项目管理.html" class="nav-item">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+            </svg>
+          </span>
+          <span>项目管理</span>
+        </a>
+        <a href="04-人脸识别库.html" class="nav-item">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+          </span>
+          <span>人脸识别库</span>
+          <span class="nav-badge">5</span>
+        </a>
+        <a href="05-数据分析.html" class="nav-item">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+          </span>
+          <span>数据分析</span>
+        </a>
+        <a href="20-回收站.html" class="nav-item">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+          </span>
+          <span>回收站</span>
+        </a>
+      </div>
+
+      <!-- System section -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">系统</div>
+        <a href="15-设置页面.html" class="nav-item">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </span>
+          <span>设置</span>
+        </a>
+      </div>
+
+      <!-- User -->
+      <div class="sidebar-bottom">
+        <a href="16-用户个人信息.html" class="sidebar-user">
+          <div class="avatar sm">张</div>
+          <div>
+            <div class="user-name">张三</div>
+            <div class="user-role">管理员</div>
+          </div>
+        </a>
+      </div>
+    </aside>
+
+    <!-- ═══════════════ Main Content ═══════════════ -->
+    <main class="main-content">
+
+      <!-- ── 1. Page Header ── -->
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">智能素材搜索</h1>
+          <p class="page-subtitle">多模态AI搜索 · 分镜级精准定位</p>
+        </div>
+        <div class="header-right">
+          <!-- Project Selector (inline dropdown) -->
+          <div class="project-selector-wrapper">
+            <div class="project-selector" onclick="toggleProjectDropdown()" id="projectTrigger">
+              <span>◈</span>
+              <span id="selectedProjectName">护肤品A系列</span>
+              <span style="color:var(--text-dim);font-size:11px;">▾</span>
+            </div>
+            <div class="dropdown-backdrop" id="dropdownBackdrop" onclick="toggleProjectDropdown()"></div>
+            <div class="dropdown-panel" id="projectDropdown">
+              <!-- Search -->
+              <div class="dropdown-search">
+                <div class="search-input-wrapper">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                  <input type="text" placeholder="搜索项目…">
+                </div>
+              </div>
+              <!-- List -->
+              <div class="dropdown-list">
+                <div class="dropdown-item" onclick="selectProject(this, '全部项目')">
+                  <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span class="project-name">全部项目</span>
+                  <span class="project-count">(2,345)</span>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="section-label">📌 最近使用</div>
+                <div class="dropdown-item active" onclick="selectProject(this, '护肤品A系列')">
+                  <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span class="project-dot" style="background:#8b5cf6;"></span>
+                  <span class="project-name">护肤品A系列</span>
+                  <span class="project-count">486</span>
+                </div>
+                <div class="dropdown-item" onclick="selectProject(this, '口红系列')">
+                  <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span class="project-dot" style="background:#ec4899;"></span>
+                  <span class="project-name">口红系列</span>
+                  <span class="project-count">312</span>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="section-label">📁 所有项目</div>
+                <div class="dropdown-item" onclick="selectProject(this, '眼影系列')">
+                  <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span class="project-dot" style="background:#3b82f6;"></span>
+                  <span class="project-name">眼影系列</span>
+                  <span class="project-count">258</span>
+                </div>
+                <div class="dropdown-item" onclick="selectProject(this, '面膜系列')">
+                  <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span class="project-dot" style="background:#10b981;"></span>
+                  <span class="project-name">面膜系列</span>
+                  <span class="project-count">189</span>
+                </div>
+                <div class="dropdown-item" onclick="selectProject(this, '粉底液系列')">
+                  <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span class="project-dot" style="background:#f59e0b;"></span>
+                  <span class="project-name">粉底液系列</span>
+                  <span class="project-count">145</span>
+                </div>
+                <div class="dropdown-item" onclick="selectProject(this, '防晒系列')">
+                  <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span class="project-dot" style="background:#06b6d4;"></span>
+                  <span class="project-name">防晒系列</span>
+                  <span class="project-count">97</span>
+                </div>
+              </div>
+              <!-- Footer -->
+              <div class="dropdown-footer">
+                <a href="03-项目管理.html">➕ 管理项目</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notification Bell -->
+          <div class="project-selector-wrapper">
+            <div class="icon-btn" title="通知" onclick="togglePanel('notifPanel','notifBackdrop')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+              <span class="dot"></span>
+            </div>
+            <div class="dropdown-backdrop" id="notifBackdrop" onclick="togglePanel('notifPanel','notifBackdrop')"></div>
+            <div class="dropdown-panel" id="notifPanel" style="width:360px;right:0;">
+              <div style="padding:16px 20px;border-bottom:1px solid var(--border-normal);display:flex;align-items:center;justify-content:space-between;">
+                <div style="font-size:15px;font-weight:700;color:var(--text-heading);display:flex;align-items:center;gap:8px;">
+                  通知中心
+                  <span style="padding:1px 7px;border-radius:10px;background:var(--gradient-primary);color:#fff;font-size:11px;font-weight:700;">3</span>
+                </div>
+                <span style="font-size:12px;color:var(--text-tag);cursor:pointer;">全部已读</span>
+              </div>
+              <div style="max-height:380px;overflow-y:auto;">
+                <div style="padding:14px 20px;border-bottom:1px solid var(--border-normal);display:flex;gap:12px;background:rgba(251,191,36,0.04);cursor:pointer;">
+                  <div style="width:36px;height:36px;border-radius:50%;background:rgba(52,211,153,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">✅</div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-size:13px;font-weight:600;color:var(--text-heading);margin-bottom:2px;">AI 分析完成</div>
+                    <div style="font-size:12px;color:var(--text-muted);line-height:1.5;margin-bottom:4px;">「护肤品_涂抹质地_01.mp4」已完成分析，共切分 12 个分镜</div>
+                    <div style="font-size:11px;color:var(--text-dim-alt);">3分钟前</div>
+                  </div>
+                  <div style="width:7px;height:7px;border-radius:50%;background:#fbbf24;flex-shrink:0;margin-top:6px;"></div>
+                </div>
+                <div style="padding:14px 20px;border-bottom:1px solid var(--border-normal);display:flex;gap:12px;background:rgba(251,191,36,0.04);cursor:pointer;">
+                  <div style="width:36px;height:36px;border-radius:50%;background:rgba(251,191,36,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">👤</div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-size:13px;font-weight:600;color:var(--text-heading);margin-bottom:2px;">新人脸识别</div>
+                    <div style="font-size:12px;color:var(--text-muted);line-height:1.5;margin-bottom:4px;">发现 3 张未标注的人脸，请前往人脸识别库进行标注</div>
+                    <div style="font-size:11px;color:var(--text-dim-alt);">15分钟前</div>
+                  </div>
+                  <div style="width:7px;height:7px;border-radius:50%;background:#fbbf24;flex-shrink:0;margin-top:6px;"></div>
+                </div>
+                <div style="padding:14px 20px;border-bottom:1px solid var(--border-normal);display:flex;gap:12px;background:rgba(251,191,36,0.04);cursor:pointer;">
+                  <div style="width:36px;height:36px;border-radius:50%;background:rgba(248,113,113,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">❌</div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-size:13px;font-weight:600;color:var(--text-heading);margin-bottom:2px;">分析失败</div>
+                    <div style="font-size:12px;color:var(--text-muted);line-height:1.5;margin-bottom:4px;">「口红色号对比.mov」分析失败：文件格式不支持</div>
+                    <div style="font-size:11px;color:var(--text-dim-alt);">1小时前</div>
+                  </div>
+                  <div style="width:7px;height:7px;border-radius:50%;background:#fbbf24;flex-shrink:0;margin-top:6px;"></div>
+                </div>
+                <div style="padding:14px 20px;border-bottom:1px solid var(--border-normal);display:flex;gap:12px;cursor:pointer;">
+                  <div style="width:36px;height:36px;border-radius:50%;background:rgba(96,165,250,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">📊</div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-size:13px;font-weight:600;color:var(--text-heading);margin-bottom:2px;">周报已生成</div>
+                    <div style="font-size:12px;color:var(--text-muted);line-height:1.5;margin-bottom:4px;">第5周数据报告已生成，可前往数据分析页面查看</div>
+                    <div style="font-size:11px;color:var(--text-dim-alt);">昨天 18:30</div>
+                  </div>
+                </div>
+              </div>
+              <div style="padding:12px 20px;border-top:1px solid var(--border-normal);text-align:center;">
+                <a href="19-通知中心.html" style="font-size:13px;color:var(--text-tag);text-decoration:none;">查看全部通知 →</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Help Center -->
+          <div class="project-selector-wrapper">
+            <div class="icon-btn" title="帮助" onclick="togglePanel('helpPanel','helpBackdrop')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
+            <div class="dropdown-backdrop" id="helpBackdrop" onclick="togglePanel('helpPanel','helpBackdrop')"></div>
+            <div class="dropdown-panel" id="helpPanel" style="width:340px;right:0;">
+              <div style="padding:16px 20px;border-bottom:1px solid var(--border-normal);">
+                <div style="font-size:15px;font-weight:700;color:var(--text-heading);">帮助中心</div>
+              </div>
+              <div style="padding:14px 20px;border-bottom:1px solid var(--border-normal);">
+                <div style="position:relative;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text-dim-alt);pointer-events:none;"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                  <input type="text" placeholder="搜索帮助文档…" style="width:100%;padding:9px 14px 9px 34px;background:rgba(15,15,25,0.6);border:1px solid var(--border-normal);border-radius:var(--radius-small);color:var(--text-heading);font-size:13px;">
+                </div>
+              </div>
+              <div style="padding:16px 20px;border-bottom:1px solid var(--border-normal);">
+                <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">🚀 快速开始</div>
+                <div style="display:flex;flex-direction:column;gap:2px;">
+                  <a style="display:flex;align-items:center;gap:10px;padding:8px 10px;margin:0 -10px;border-radius:var(--radius-small);font-size:13px;color:var(--text-body);cursor:pointer;text-decoration:none;">📤 如何上传素材</a>
+                  <a style="display:flex;align-items:center;gap:10px;padding:8px 10px;margin:0 -10px;border-radius:var(--radius-small);font-size:13px;color:var(--text-body);cursor:pointer;text-decoration:none;">🔍 使用智能搜索</a>
+                  <a style="display:flex;align-items:center;gap:10px;padding:8px 10px;margin:0 -10px;border-radius:var(--radius-small);font-size:13px;color:var(--text-body);cursor:pointer;text-decoration:none;">📋 创建和管理项目</a>
+                  <a style="display:flex;align-items:center;gap:10px;padding:8px 10px;margin:0 -10px;border-radius:var(--radius-small);font-size:13px;color:var(--text-body);cursor:pointer;text-decoration:none;">👤 人脸识别与标注</a>
+                  <a style="display:flex;align-items:center;gap:10px;padding:8px 10px;margin:0 -10px;border-radius:var(--radius-small);font-size:13px;color:var(--text-body);cursor:pointer;text-decoration:none;">⌨️ 键盘快捷键</a>
+                </div>
+              </div>
+              <div style="padding:14px 20px;display:flex;flex-direction:column;gap:6px;">
+                <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-muted);">📧 技术支持：<span style="color:var(--text-body-alt);">support@company.com</span></div>
+                <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-muted);">💬 在线客服：<span style="color:var(--text-body-alt);">工作日 9:00-18:00</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 2. Workspace Guidance ── -->
+      <div class="workspace-box">
+        <div class="workspace-greeting">👋 早上好，张三</div>
+        <div class="workspace-row">
+          <!-- Recent projects -->
+          <div class="workspace-col">
+            <div class="workspace-col-title">近期项目</div>
+            <div class="workspace-pills">
+              <span class="workspace-pill"><span class="pill-icon">📂</span> 护肤品A系列</span>
+              <span class="workspace-pill"><span class="pill-icon">📂</span> 美妆春季推广</span>
+              <span class="workspace-pill"><span class="pill-icon">📂</span> 防晒专题</span>
+            </div>
+          </div>
+          <!-- Recent searches -->
+          <div class="workspace-col">
+            <div class="workspace-col-title">最近搜索</div>
+            <div class="workspace-pills">
+              <span class="workspace-pill"><span class="pill-icon">🔍</span> 涂抹质地特写</span>
+              <span class="workspace-pill"><span class="pill-icon">🔍</span> 开箱镜头</span>
+              <span class="workspace-pill"><span class="pill-icon">🔍</span> 痛点展示</span>
+            </div>
+          </div>
+          <!-- Pending -->
+          <div class="workspace-col">
+            <div class="workspace-col-title">待处理</div>
+            <div class="pending-list">
+              <div class="pending-item">
+                <span class="pending-dot purple"></span>
+                <span>3个素材分析完成</span>
+                <span class="badge green" style="margin-left:auto;">完成</span>
+              </div>
+              <div class="pending-item">
+                <span class="pending-dot pink"></span>
+                <span>2个人脸待标注</span>
+                <span class="badge yellow" style="margin-left:auto;">待处理</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 3. Search Mode Tabs ── -->
+      <div class="search-modes">
+        <button class="mode-btn active" onclick="switchSearchMode('text', this)">文字搜索</button>
+        <button class="mode-btn" onclick="switchSearchMode('visual', this)">以图/视频搜索</button>
+      </div>
+
+      <!-- ── 4. Search Box (Text Mode) ── -->
+      <div class="search-box" id="textSearchBox">
+        <div class="search-box-inner">
+          <span class="ai-badge">AI</span>
+          <input type="text" placeholder="描述你想找的画面，如"手持护肤品涂抹在脸上的特写镜头"">
+          <button class="search-btn">搜 索</button>
+        </div>
+      </div>
+
+      <!-- ── 4b. Drag Zone (Image/Video Mode) ── -->
+      <div class="drop-zone" id="dropZone" style="display:none;" onclick="triggerFileUpload()">
+        <input type="file" id="fileInput" style="display:none" onchange="handleFileSelect(this)">
+        <div class="drop-zone-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+          </svg>
+        </div>
+        <div class="drop-zone-text">点击或拖拽文件到此处</div>
+        <div class="drop-zone-hint">支持 jpg / png / mp4 / mov，文件将自动解析</div>
+      </div>
+
+      <!-- ── 4c. File Preview & Progress (Hidden initially) ── -->
+      <div class="file-preview-area" id="filePreviewArea" style="display:none;">
+        <div class="preview-thumb-box">
+          <img src="" class="preview-thumb-img" id="previewThumb">
+        </div>
+        <div class="preview-info">
+          <div class="preview-filename" id="previewFilename">filename.jpg</div>
+          <div class="progress-container">
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="uploadProgress"></div>
+            </div>
+            <div class="progress-status">
+              <span id="progressText">解析中...</span>
+              <span id="progressPercent">0%</span>
+            </div>
+          </div>
+        </div>
+        <div class="preview-actions">
+          <button class="btn btn-primary" id="visualSearchBtn" disabled onclick="performVisualSearch()">搜 索</button>
+          <button class="btn btn-ghost btn-icon" onclick="resetUpload()" title="删除">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── 5. AI Tags ── -->
+      <div class="ai-tags">
+        <span class="sparkle-label">✦ AI推荐</span>
+        <span class="tag active">黄金三秒开头</span>
+        <span class="tag">痛点展示</span>
+        <span class="tag pink">涂抹质地</span>
+        <span class="tag">引导下单手势</span>
+        <span class="tag pink">原生感/UGC</span>
+        <span class="tag">手持展示</span>
+        <span class="tag pink">温馨氛围</span>
+      </div>
+
+      <!-- ── 5b. Advanced Filters (优化：结构化分组筛选) ── -->
+      <div class="filter-section">
+        <div class="filter-section-header">
+          <span class="filter-section-title">高级筛选</span>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-ghost btn-xs">重置</button>
+            <button class="btn btn-ghost btn-xs">展开 ▾</button>
+          </div>
+        </div>
+        <div class="filter-section-body">
+          <!-- 【新增】营销用途分类 -->
+          <div class="filter-row">
+            <span class="filter-label">📌 营销用途</span>
+            <select class="form-select" style="width:180px;">
+              <option>全部用途</option>
+              <option>黄金三秒开头</option>
+              <option>痛点展示</option>
+              <option>引导下单手势</option>
+              <option>专家背书</option>
+              <option>使用对比</option>
+              <option>信任背书</option>
+            </select>
+            <span class="filter-label" style="margin-left:10px;">🎬 镜头语言</span>
+            <select class="form-select" style="width:180px;">
+              <option>全部镜头</option>
+              <option>特写（产品/面部）</option>
+              <option>近景（半身）</option>
+              <option>中景（全身）</option>
+              <option>全景（环境）</option>
+              <option>运镜（移动/推拉）</option>
+              <option>第一视角</option>
+            </select>
+          </div>
+          <!-- 人脸筛选 -->
+          <div class="filter-row">
+            <span class="filter-label">👤 人脸筛选</span>
+            <div class="face-filter-chips">
+              <div class="face-chip selected" title="模特小王">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <div class="face-chip" title="模特小李">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <div class="face-chip" title="演员小张">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <div class="face-chip" title="模特小赵">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <button class="btn btn-ghost btn-xs">更多...</button>
+            </div>
+          </div>
+          <!-- 日期/时长/场景 -->
+          <div class="filter-row">
+            <span class="filter-label">📅 日期范围</span>
+            <select class="form-select" style="width:160px;">
+              <option>全部时间</option>
+              <option>今天</option>
+              <option>本周</option>
+              <option selected>本月</option>
+              <option>近3个月</option>
+              <option>自定义</option>
+            </select>
+            <span class="filter-label" style="margin-left:10px;">⏱️ 时长</span>
+            <select class="form-select" style="width:140px;">
+              <option>不限</option>
+              <option>0-5秒</option>
+              <option>5-10秒</option>
+              <option>10-30秒</option>
+              <option>30秒以上</option>
+            </select>
+          </div>
+          <div class="filter-row">
+            <span class="filter-label">🏠 场景</span>
+            <select class="form-select" style="width:160px;">
+              <option>全部场景</option>
+              <option>室内</option>
+              <option>户外</option>
+              <option>摄影棚</option>
+            </select>
+            <span class="filter-label" style="margin-left:10px;">📊 排序</span>
+            <select class="form-select" style="width:180px;">
+              <option>相关度（默认）</option>
+              <option>最新上传</option>
+              <option>下载最多</option>
+              <option>时长从短到长</option>
+              <option>时长从长到短</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 5c. Active Filter Chips ── -->
+      <div class="active-filters">
+        <span style="font-size:12px;color:var(--text-muted);font-weight:600;">已选条件：</span>
+        <span class="active-filter-chip">项目: 护肤品A系列 <span class="chip-remove">✕</span></span>
+        <span class="active-filter-chip">人脸: 模特小王 <span class="chip-remove">✕</span></span>
+        <span class="active-filter-chip">本月 <span class="chip-remove">✕</span></span>
+        <button class="btn btn-ghost btn-xs" style="color:var(--red);">清空全部</button>
+      </div>
+
+      <!-- ── 6. Results Bar ── -->
+      <div class="results-bar">
+        <div class="results-count">
+          找到 <strong>156</strong> 个分镜
+          <span class="ai-time-badge">
+            <span class="ai-spark">✦</span> AI分析耗时 0.8s
+          </span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="btn btn-outline btn-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            批量下载 (3)
+          </button>
+          <div class="view-toggle">
+            <button class="toggle-btn active" title="网格视图">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+              </svg>
+            </button>
+            <button class="toggle-btn" title="列表视图">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 7. Card Grid (6 cards, 3 columns) ── -->
+      <div class="card-grid">
+
+        <!-- Card 1 -->
+        <a href="08-分镜详情页.html" class="card">
+          <div class="card-thumb">
+            <svg class="card-thumb-svg" viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#1a1a2e"/>
+                  <stop offset="100%" stop-color="#16213e"/>
+                </linearGradient>
+                <pattern id="dots1" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <circle cx="2" cy="2" r="0.8" fill="rgba(139,92,246,0.15)"/>
+                </pattern>
+              </defs>
+              <rect width="400" height="225" fill="url(#g1)"/>
+              <rect width="400" height="225" fill="url(#dots1)"/>
+              <rect x="140" y="60" width="120" height="80" rx="8" fill="rgba(139,92,246,0.08)" stroke="rgba(139,92,246,0.15)" stroke-width="1"/>
+              <circle cx="200" cy="100" r="18" fill="rgba(139,92,246,0.12)" stroke="rgba(139,92,246,0.25)" stroke-width="1.5"/>
+              <polygon points="195,92 195,108 208,100" fill="rgba(255,255,255,0.5)"/>
+              <text x="200" y="160" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-size="11" font-family="sans-serif">护肤品涂抹特写</text>
+            </svg>
+            <input type="checkbox" class="cb card-checkbox" checked>
+            <div class="play-btn">▶</div>
+            <div class="score-badge">95%</div>
+            <div class="duration">0:03</div>
+            <div class="thumb-hover-hint">悬停播放 | 点击详情</div>
+          </div>
+          <div class="card-body">
+            <div class="card-ai-desc">
+              <span class="ai-icon">AI</span>
+              <span class="ai-desc-text">近景特写，模特正在将护肤品涂抹于面部，光线柔和自然，展示产品质地</span>
+            </div>
+            <div class="card-tags">
+              <span class="card-tag">#痛点</span>
+              <span class="card-tag">#涂抹</span>
+              <span class="card-tag">#特写</span>
+            </div>
+            <div class="card-source">
+              <span class="card-source-item">📁 护肤品A系列</span>
+              <span class="card-source-item">📎 护肤品_涂抹_01.mp4</span>
+            </div>
+            <div class="card-meta-rich">
+              <div class="card-meta-left">
+                <span class="card-meta-avatar">李</span>
+                <span>李佳佳</span>
+              </div>
+              <div class="card-meta-right">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>234</span>
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Card 2 -->
+        <a href="08-分镜详情页.html" class="card">
+          <div class="card-thumb">
+            <svg class="card-thumb-svg" viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#1a1a2e"/>
+                  <stop offset="50%" stop-color="#1b1b30"/>
+                  <stop offset="100%" stop-color="#16213e"/>
+                </linearGradient>
+                <pattern id="lines2" width="30" height="30" patternUnits="userSpaceOnUse">
+                  <line x1="0" y1="30" x2="30" y2="0" stroke="rgba(236,72,153,0.06)" stroke-width="0.5"/>
+                </pattern>
+              </defs>
+              <rect width="400" height="225" fill="url(#g2)"/>
+              <rect width="400" height="225" fill="url(#lines2)"/>
+              <ellipse cx="200" cy="95" rx="45" ry="50" fill="rgba(236,72,153,0.06)" stroke="rgba(236,72,153,0.12)" stroke-width="1"/>
+              <circle cx="200" cy="100" r="18" fill="rgba(236,72,153,0.1)" stroke="rgba(236,72,153,0.2)" stroke-width="1.5"/>
+              <polygon points="195,92 195,108 208,100" fill="rgba(255,255,255,0.5)"/>
+              <text x="200" y="165" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-size="11" font-family="sans-serif">情绪痛点镜头</text>
+            </svg>
+            <input type="checkbox" class="cb card-checkbox" checked>
+            <div class="play-btn">▶</div>
+            <div class="score-badge">92%</div>
+            <div class="duration">0:05</div>
+            <div class="thumb-hover-hint">悬停播放 | 点击详情</div>
+          </div>
+          <div class="card-body">
+            <div class="card-ai-desc">
+              <span class="ai-icon">AI</span>
+              <span class="ai-desc-text">中景，女生对镜哭泣，呈现肌肤问题的情绪痛点，引发用户共鸣</span>
+            </div>
+            <div class="card-tags">
+              <span class="card-tag">#痛点</span>
+              <span class="card-tag">#哭泣</span>
+              <span class="card-tag">#镜子</span>
+            </div>
+            <div class="card-source">
+              <span class="card-source-item">📁 护肤品A系列</span>
+              <span class="card-source-item">📎 痛点_哭泣_02.mp4</span>
+            </div>
+            <div class="card-meta-rich">
+              <div class="card-meta-left">
+                <span class="card-meta-avatar">王</span>
+                <span>王小美</span>
+              </div>
+              <div class="card-meta-right">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>189</span>
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Card 3 -->
+        <a href="08-分镜详情页.html" class="card">
+          <div class="card-thumb">
+            <svg class="card-thumb-svg" viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="g3" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#1a1a2e"/>
+                  <stop offset="100%" stop-color="#1e1640"/>
+                </linearGradient>
+                <pattern id="grid3" width="25" height="25" patternUnits="userSpaceOnUse">
+                  <rect width="25" height="25" fill="none" stroke="rgba(99,102,241,0.06)" stroke-width="0.5"/>
+                </pattern>
+              </defs>
+              <rect width="400" height="225" fill="url(#g3)"/>
+              <rect width="400" height="225" fill="url(#grid3)"/>
+              <rect x="120" y="50" width="160" height="100" rx="10" fill="none" stroke="rgba(99,102,241,0.12)" stroke-width="1" stroke-dasharray="4,4"/>
+              <circle cx="200" cy="100" r="18" fill="rgba(99,102,241,0.1)" stroke="rgba(99,102,241,0.2)" stroke-width="1.5"/>
+              <polygon points="195,92 195,108 208,100" fill="rgba(255,255,255,0.5)"/>
+              <text x="200" y="170" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-size="11" font-family="sans-serif">产品开箱展示</text>
+            </svg>
+            <input type="checkbox" class="cb card-checkbox" checked>
+            <div class="play-btn">▶</div>
+            <div class="score-badge">88%</div>
+            <div class="duration">0:08</div>
+            <div class="thumb-hover-hint">悬停播放 | 点击详情</div>
+          </div>
+          <div class="card-body">
+            <div class="card-ai-desc">
+              <span class="ai-icon">AI</span>
+              <span class="ai-desc-text">开箱展示，双手打开产品包装，展现精致外观设计和配色</span>
+            </div>
+            <div class="card-tags">
+              <span class="card-tag">#开箱</span>
+              <span class="card-tag">#展示</span>
+              <span class="card-tag">#UGC</span>
+            </div>
+            <div class="card-source">
+              <span class="card-source-item">📁 护肤品A系列</span>
+              <span class="card-source-item">📎 开箱_展示_03.mp4</span>
+            </div>
+            <div class="card-meta-rich">
+              <div class="card-meta-left">
+                <span class="card-meta-avatar">陈</span>
+                <span>陈思思</span>
+              </div>
+              <div class="card-meta-right">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>156</span>
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Card 4 -->
+        <a href="08-分镜详情页.html" class="card">
+          <div class="card-thumb">
+            <svg class="card-thumb-svg" viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="g4" x1="100%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#1e1640"/>
+                  <stop offset="100%" stop-color="#1a1a2e"/>
+                </linearGradient>
+                <pattern id="hex4" width="28" height="28" patternUnits="userSpaceOnUse">
+                  <circle cx="14" cy="14" r="6" fill="none" stroke="rgba(139,92,246,0.05)" stroke-width="0.5"/>
+                </pattern>
+              </defs>
+              <rect width="400" height="225" fill="url(#g4)"/>
+              <rect width="400" height="225" fill="url(#hex4)"/>
+              <path d="M150,70 Q200,40 250,70 Q280,100 250,130 Q200,160 150,130 Q120,100 150,70Z" fill="none" stroke="rgba(139,92,246,0.1)" stroke-width="1"/>
+              <circle cx="200" cy="100" r="18" fill="rgba(139,92,246,0.1)" stroke="rgba(139,92,246,0.2)" stroke-width="1.5"/>
+              <polygon points="195,92 195,108 208,100" fill="rgba(255,255,255,0.5)"/>
+              <text x="200" y="170" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-size="11" font-family="sans-serif">手势引导镜头</text>
+            </svg>
+            <input type="checkbox" class="cb card-checkbox">
+            <div class="play-btn">▶</div>
+            <div class="score-badge">85%</div>
+            <div class="duration">0:04</div>
+            <div class="thumb-hover-hint">悬停播放 | 点击详情</div>
+          </div>
+          <div class="card-body">
+            <div class="card-ai-desc">
+              <span class="ai-icon">AI</span>
+              <span class="ai-desc-text">手部特写，手指滑动手机屏幕，配合引导下单的手势动作</span>
+            </div>
+            <div class="card-tags">
+              <span class="card-tag">#引导</span>
+              <span class="card-tag">#手势</span>
+              <span class="card-tag">#下单</span>
+            </div>
+            <div class="card-source">
+              <span class="card-source-item">📁 护肤品A系列</span>
+              <span class="card-source-item">📎 引导_手势_04.mp4</span>
+            </div>
+            <div class="card-meta-rich">
+              <div class="card-meta-left">
+                <span class="card-meta-avatar">李</span>
+                <span>李佳佳</span>
+              </div>
+              <div class="card-meta-right">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>112</span>
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Card 5 -->
+        <a href="08-分镜详情页.html" class="card">
+          <div class="card-thumb">
+            <svg class="card-thumb-svg" viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="g5" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#16213e"/>
+                  <stop offset="50%" stop-color="#1a1a2e"/>
+                  <stop offset="100%" stop-color="#201535"/>
+                </linearGradient>
+                <pattern id="wave5" width="40" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M0,10 Q10,0 20,10 Q30,20 40,10" fill="none" stroke="rgba(236,72,153,0.06)" stroke-width="0.5"/>
+                </pattern>
+              </defs>
+              <rect width="400" height="225" fill="url(#g5)"/>
+              <rect width="400" height="225" fill="url(#wave5)"/>
+              <rect x="140" y="55" width="120" height="90" rx="12" fill="rgba(236,72,153,0.05)" stroke="rgba(236,72,153,0.1)" stroke-width="1"/>
+              <circle cx="200" cy="100" r="18" fill="rgba(236,72,153,0.08)" stroke="rgba(236,72,153,0.18)" stroke-width="1.5"/>
+              <polygon points="195,92 195,108 208,100" fill="rgba(255,255,255,0.5)"/>
+              <text x="200" y="170" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-size="11" font-family="sans-serif">温馨氛围画面</text>
+            </svg>
+            <input type="checkbox" class="cb card-checkbox">
+            <div class="play-btn">▶</div>
+            <div class="score-badge">82%</div>
+            <div class="duration">0:06</div>
+            <div class="thumb-hover-hint">悬停播放 | 点击详情</div>
+          </div>
+          <div class="card-body">
+            <div class="card-ai-desc">
+              <span class="ai-icon">AI</span>
+              <span class="ai-desc-text">暖色调画面，卧室场景中自然光照射，模特展示晨间护肤步骤</span>
+            </div>
+            <div class="card-tags">
+              <span class="card-tag">#氛围</span>
+              <span class="card-tag">#晨间</span>
+              <span class="card-tag">#温馨</span>
+            </div>
+            <div class="card-source">
+              <span class="card-source-item">📁 美妆春季推广</span>
+              <span class="card-source-item">📎 氛围_晨间_05.mp4</span>
+            </div>
+            <div class="card-meta-rich">
+              <div class="card-meta-left">
+                <span class="card-meta-avatar">张</span>
+                <span>张小花</span>
+              </div>
+              <div class="card-meta-right">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>98</span>
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Card 6 -->
+        <a href="08-分镜详情页.html" class="card">
+          <div class="card-thumb">
+            <svg class="card-thumb-svg" viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="g6" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#16213e"/>
+                  <stop offset="100%" stop-color="#1a1a2e"/>
+                </linearGradient>
+                <pattern id="cross6" width="16" height="16" patternUnits="userSpaceOnUse">
+                  <line x1="8" y1="0" x2="8" y2="16" stroke="rgba(99,102,241,0.04)" stroke-width="0.5"/>
+                  <line x1="0" y1="8" x2="16" y2="8" stroke="rgba(99,102,241,0.04)" stroke-width="0.5"/>
+                </pattern>
+              </defs>
+              <rect width="400" height="225" fill="url(#g6)"/>
+              <rect width="400" height="225" fill="url(#cross6)"/>
+              <rect x="130" y="50" width="140" height="95" rx="8" fill="none" stroke="rgba(99,102,241,0.08)" stroke-width="1"/>
+              <rect x="155" y="65" width="90" height="60" rx="6" fill="rgba(99,102,241,0.04)"/>
+              <circle cx="200" cy="95" r="18" fill="rgba(99,102,241,0.08)" stroke="rgba(99,102,241,0.15)" stroke-width="1.5"/>
+              <polygon points="195,87 195,103 208,95" fill="rgba(255,255,255,0.5)"/>
+              <text x="200" y="170" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-size="11" font-family="sans-serif">手持产品展示</text>
+            </svg>
+            <input type="checkbox" class="cb card-checkbox">
+            <div class="play-btn">▶</div>
+            <div class="score-badge">79%</div>
+            <div class="duration">0:07</div>
+            <div class="thumb-hover-hint">悬停播放 | 点击详情</div>
+          </div>
+          <div class="card-body">
+            <div class="card-ai-desc">
+              <span class="ai-icon">AI</span>
+              <span class="ai-desc-text">手持产品正面展示，背景虚化，突出产品包装和品牌Logo</span>
+            </div>
+            <div class="card-tags">
+              <span class="card-tag">#手持</span>
+              <span class="card-tag">#展示</span>
+              <span class="card-tag">#品牌</span>
+            </div>
+            <div class="card-source">
+              <span class="card-source-item">📁 护肤品A系列</span>
+              <span class="card-source-item">📎 手持_展示_06.mp4</span>
+            </div>
+            <div class="card-meta-rich">
+              <div class="card-meta-left">
+                <span class="card-meta-avatar">王</span>
+                <span>王小美</span>
+              </div>
+              <div class="card-meta-right">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>76</span>
+              </div>
+            </div>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- ── 8. Pagination ── -->
+      <div class="pagination">
+        <button class="page-btn disabled">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <span class="page-ellipsis">…</span>
+        <button class="page-btn">12</button>
+        <button class="page-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+    </main>
+  </div>
+<script>
+function toggleProjectDropdown() {
+  var panel = document.getElementById('projectDropdown');
+  var backdrop = document.getElementById('dropdownBackdrop');
+  var isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open');
+  backdrop.classList.toggle('open');
+  if (!isOpen) {
+    var input = panel.querySelector('input');
+    if (input) input.focus();
+  }
+}
+
+function togglePanel(panelId, backdropId) {
+  // Close all other panels first
+  var allPanels = document.querySelectorAll('.dropdown-panel');
+  var allBackdrops = document.querySelectorAll('.dropdown-backdrop');
+  allPanels.forEach(function(p) { if (p.id !== panelId) p.classList.remove('open'); });
+  allBackdrops.forEach(function(b) { if (b.id !== backdropId) b.classList.remove('open'); });
+  document.getElementById(panelId).classList.toggle('open');
+  document.getElementById(backdropId).classList.toggle('open');
+}
+
+function selectProject(el, name) {
+  // Remove active from all items
+  var items = el.parentElement.querySelectorAll('.dropdown-item');
+  items.forEach(function(item) { item.classList.remove('active'); });
+  // Set active
+  el.classList.add('active');
+  // Update trigger text
+  document.getElementById('selectedProjectName').textContent = name;
+  // Close dropdown
+  toggleProjectDropdown();
+}
+
+/* ── Search Mode Logic ── */
+let currentMode = 'text';
+
+function switchSearchMode(mode, btn) {
+  currentMode = mode;
+  
+  // Update Tabs
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  // Update UI Areas
+  const textBox = document.getElementById('textSearchBox');
+  const dropZone = document.getElementById('dropZone');
+  const previewArea = document.getElementById('filePreviewArea');
+
+  if (mode === 'text') {
+    textBox.style.display = 'flex'; // Restore flex display
+    dropZone.style.display = 'none';
+    previewArea.style.display = 'none';
+    resetVisualBadges(false); // Hide visual badges
+  } else {
+    textBox.style.display = 'none';
+    // If file already uploaded, show preview, else show dropzone
+    if (previewArea.getAttribute('data-has-file') === 'true') {
+      previewArea.style.display = 'flex';
+      dropZone.style.display = 'none';
+    } else {
+      dropZone.style.display = 'flex';
+      previewArea.style.display = 'none';
+    }
+  }
+}
+
+function triggerFileUpload() {
+  document.getElementById('fileInput').click();
+}
+
+function handleFileSelect(input) {
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    const dropZone = document.getElementById('dropZone');
+    const previewArea = document.getElementById('filePreviewArea');
+    const thumb = document.getElementById('previewThumb');
+    const filename = document.getElementById('previewFilename');
+    
+    // Set file info
+    filename.textContent = file.name;
+    
+    // Create preview URL
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      thumb.src = e.target.result;
+    }
+    reader.readAsDataURL(file);
+
+    // Switch UI
+    dropZone.style.display = 'none';
+    previewArea.style.display = 'flex';
+    previewArea.setAttribute('data-has-file', 'true');
+
+    // Start Simulation
+    simulateParsing();
+  }
+}
+
+function simulateParsing() {
+  const bar = document.getElementById('uploadProgress');
+  const text = document.getElementById('progressText');
+  const percent = document.getElementById('progressPercent');
+  const btn = document.getElementById('visualSearchBtn');
+  
+  let width = 0;
+  btn.disabled = true;
+  btn.textContent = '解析中...';
+  text.textContent = '正在上传并解析...';
+  
+  const interval = setInterval(() => {
+    if (width >= 100) {
+      clearInterval(interval);
+      text.textContent = '解析完成';
+      percent.textContent = '100%';
+      btn.disabled = false;
+      btn.textContent = '搜 索';
+      btn.classList.remove('btn-secondary');
+      btn.classList.add('btn-primary');
+    } else {
+      width += 5;
+      bar.style.width = width + '%';
+      percent.textContent = width + '%';
+    }
+  }, 100);
+}
+
+function resetUpload() {
+  document.getElementById('fileInput').value = '';
+  document.getElementById('filePreviewArea').style.display = 'none';
+  document.getElementById('filePreviewArea').setAttribute('data-has-file', 'false');
+  document.getElementById('dropZone').style.display = 'flex';
+  document.getElementById('uploadProgress').style.width = '0%';
+  resetVisualBadges(false);
+}
+
+function performVisualSearch() {
+  // Simulate search results update
+  const btn = document.getElementById('visualSearchBtn');
+  btn.textContent = '搜索中...';
+  
+  setTimeout(() => {
+    btn.textContent = '搜 索';
+    // Show visual similarity badges
+    resetVisualBadges(true);
+    alert('搜索完成！已按视觉相似度排序。');
+  }, 800);
+}
+
+function resetVisualBadges(show) {
+  // Remove existing badges first
+  document.querySelectorAll('.similarity-badge').forEach(el => el.remove());
+  
+  if (show) {
+    // Add badges to cards
+    const cards = document.querySelectorAll('.card-meta-rich');
+    cards.forEach(card => {
+      const score = Math.floor(Math.random() * (99 - 85) + 85);
+      const badge = document.createElement('span');
+      badge.className = 'similarity-badge';
+      badge.textContent = `视觉相似度 ${score}%`;
+      card.appendChild(badge);
+    });
+  }
+}
+</script>
+</body>
+</html>

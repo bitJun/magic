@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>人物分镜列表 - 智能素材管理系统</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">✦</div>
+      <div class="logo-text">
+        <span class="brand">大魔王</span>
+        <span class="subtitle">智能素材管理</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">主菜单</div>
+        <a href="01-智能搜索.html" class="nav-item">
+          <span class="nav-icon">🔍</span> 智能搜索
+        </a>
+        <a href="02-素材库管理.html" class="nav-item">
+          <span class="nav-icon">📁</span> 素材库
+        </a>
+        <a href="03-项目管理.html" class="nav-item">
+          <span class="nav-icon">📂</span> 项目管理
+        </a>
+        <a href="04-人脸识别库.html" class="nav-item active">
+          <span class="nav-icon">👤</span> 人脸库
+        </a>
+        <a href="05-数据分析.html" class="nav-item">
+          <span class="nav-icon">📊</span> 数据分析
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">系统</div>
+        <a href="15-设置页面.html" class="nav-item">
+          <span class="nav-icon">⚙️</span> 设置
+        </a>
+        <a href="20-回收站.html" class="nav-item">
+          <span class="nav-icon">🗑️</span> 回收站
+        </a>
+      </div>
+    </nav>
+    <a href="16-用户个人信息.html" class="sidebar-user">
+      <div class="user-avatar">张</div>
+      <div class="user-info">
+        <div class="user-name">张三</div>
+        <div class="user-role">管理员</div>
+      </div>
+    </a>
+  </aside>
+
+  <!-- ===== Main Content ===== -->
+  <main class="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <div class="breadcrumb">
+          <a href="04-人脸识别库.html">人脸库</a>
+          <span class="sep">›</span>
+          <span class="current">模特小王</span>
+        </div>
+        <h1 class="page-title">人物分镜列表</h1>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-outline">✏️ 编辑信息</button>
+      </div>
+    </div>
+
+    <div class="content-area">
+      <!-- ===== Person Header ===== -->
+      <div class="person-detail-header">
+        <!-- Large Avatar -->
+        <div class="person-lg-avatar">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="16" r="8" fill="white" opacity="0.8"/>
+            <path d="M8 42c0-8 7-14 16-14s16 6 16 14" fill="white" opacity="0.5"/>
+          </svg>
+        </div>
+
+        <!-- Details -->
+        <div class="person-detail-info">
+          <div class="person-detail-name">
+            模特小王
+            <span class="badge badge-blue">模特</span>
+          </div>
+          <div style="font-size:13px;color:var(--text-muted);">
+            AI自动识别人物 · 首次出现于「护肤品_涂抹质地_01.mp4」
+          </div>
+          <div class="person-detail-stats">
+            <div class="pds-item">
+              <div class="pds-value">234</div>
+              <div class="pds-label">出镜分镜</div>
+            </div>
+            <div class="pds-item">
+              <div class="pds-value">2天前</div>
+              <div class="pds-label">最近出镜</div>
+            </div>
+            <div class="pds-item">
+              <div class="pds-value">30天前</div>
+              <div class="pds-label">首次出镜</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Filter Bar ===== -->
+      <div class="filter-bar">
+        <select class="filter-select">
+          <option>全部项目</option>
+          <option>护肤品A系列</option>
+          <option>彩妆B系列</option>
+          <option>洗护C系列</option>
+        </select>
+        <select class="filter-select">
+          <option>按时间排序</option>
+          <option>按相关度排序</option>
+          <option>按下载量排序</option>
+        </select>
+        <div class="filter-spacer"></div>
+        <span style="font-size:13px;color:var(--text-muted);">共 <strong style="color:var(--text-primary);">234</strong> 个分镜</span>
+      </div>
+
+      <!-- ===== Shot Cards Grid ===== -->
+      <div class="shot-grid">
+
+        <!-- Shot Card 1 -->
+        <div class="shot-card">
+          <div class="shot-thumb svg-bg">
+            <svg viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="180" height="120" fill="none"/>
+              <circle cx="90" cy="45" r="18" fill="white" opacity="0.08"/>
+              <rect x="70" y="70" width="40" height="30" rx="4" fill="white" opacity="0.05"/>
+            </svg>
+            <span class="shot-dur">5秒</span>
+          </div>
+          <div class="shot-body">
+            <div class="shot-time-range">00:12 - 00:17</div>
+            <div class="shot-desc">女生照镜子哭泣，表情痛苦，室内卧室场景，近景特写面部表情变化。</div>
+            <div class="shot-tags">
+              <span class="shot-tag">#痛点</span>
+              <span class="shot-tag">#哭泣</span>
+              <span class="shot-tag">#镜子</span>
+              <span class="shot-tag">#近景</span>
+            </div>
+            <div class="shot-footer">
+              <span class="shot-source">护肤品A系列 · ⬇ 23</span>
+              <div class="shot-actions">
+                <a href="08-分镜详情页.html" class="link">详情 →</a>
+                <button class="btn btn-primary btn-xs">⬇ 下载</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shot Card 2 -->
+        <div class="shot-card">
+          <div class="shot-thumb svg-bg">
+            <svg viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="180" height="120" fill="none"/>
+              <ellipse cx="90" cy="50" rx="30" ry="22" fill="white" opacity="0.06"/>
+              <rect x="60" y="80" width="60" height="5" rx="2.5" fill="white" opacity="0.08"/>
+            </svg>
+            <span class="shot-dur">8秒</span>
+          </div>
+          <div class="shot-body">
+            <div class="shot-time-range">00:25 - 00:33</div>
+            <div class="shot-desc">模特展示产品使用过程，正面微笑镜头，自然光环境下拍摄。</div>
+            <div class="shot-tags">
+              <span class="shot-tag">#展示</span>
+              <span class="shot-tag">#微笑</span>
+              <span class="shot-tag">#正面</span>
+            </div>
+            <div class="shot-footer">
+              <span class="shot-source">护肤品A系列 · ⬇ 18</span>
+              <div class="shot-actions">
+                <a href="08-分镜详情页.html" class="link">详情 →</a>
+                <button class="btn btn-primary btn-xs">⬇ 下载</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shot Card 3 -->
+        <div class="shot-card">
+          <div class="shot-thumb svg-bg">
+            <svg viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="180" height="120" fill="none"/>
+              <rect x="50" y="25" width="80" height="55" rx="6" fill="white" opacity="0.05"/>
+              <circle cx="90" cy="52" r="12" fill="white" opacity="0.07"/>
+            </svg>
+            <span class="shot-dur">6秒</span>
+          </div>
+          <div class="shot-body">
+            <div class="shot-time-range">00:40 - 00:46</div>
+            <div class="shot-desc">使用后效果展示，侧面特写展示皮肤光泽度变化，柔光拍摄。</div>
+            <div class="shot-tags">
+              <span class="shot-tag">#效果</span>
+              <span class="shot-tag">#侧面</span>
+              <span class="shot-tag">#光泽</span>
+            </div>
+            <div class="shot-footer">
+              <span class="shot-source">彩妆B系列 · ⬇ 12</span>
+              <div class="shot-actions">
+                <a href="08-分镜详情页.html" class="link">详情 →</a>
+                <button class="btn btn-primary btn-xs">⬇ 下载</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shot Card 4 -->
+        <div class="shot-card">
+          <div class="shot-thumb svg-bg">
+            <svg viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="180" height="120" fill="none"/>
+              <circle cx="70" cy="50" r="16" fill="white" opacity="0.06"/>
+              <circle cx="115" cy="55" r="10" fill="white" opacity="0.04"/>
+              <rect x="45" y="82" width="90" height="4" rx="2" fill="white" opacity="0.08"/>
+            </svg>
+            <span class="shot-dur">4秒</span>
+          </div>
+          <div class="shot-body">
+            <div class="shot-time-range">01:05 - 01:09</div>
+            <div class="shot-desc">产品推荐口播镜头，面对镜头介绍产品功效，中景拍摄。</div>
+            <div class="shot-tags">
+              <span class="shot-tag">#口播</span>
+              <span class="shot-tag">#推荐</span>
+              <span class="shot-tag">#中景</span>
+            </div>
+            <div class="shot-footer">
+              <span class="shot-source">护肤品A系列 · ⬇ 31</span>
+              <div class="shot-actions">
+                <a href="08-分镜详情页.html" class="link">详情 →</a>
+                <button class="btn btn-primary btn-xs">⬇ 下载</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== Pagination ===== -->
+      <div class="pagination">
+        <div class="pagination-info">显示 1-4 / 共 234 条</div>
+        <div class="pagination-buttons">
+          <button class="page-btn" disabled>‹</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn">4</button>
+          <button class="page-btn" style="width:auto;padding:0 8px;">···</button>
+          <button class="page-btn">59</button>
+          <button class="page-btn">›</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+</body>
+</html>

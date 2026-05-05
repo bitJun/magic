@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>设置页面</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 12px;
+      border-radius: 6px;
+      background: rgba(239, 68, 68, 0.12);
+      color: #f87171;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 12px;
+    }
+
+    .settings-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .settings-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-normal);
+      border-radius: var(--radius-card);
+      padding: 24px;
+      transition: border-color var(--transition-fast);
+    }
+
+    .settings-card:hover {
+      border-color: var(--border-accent);
+    }
+
+    .settings-card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-heading);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .settings-card-title svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text-tag);
+    }
+
+    /* System info */
+    .sys-info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+    }
+
+    .sys-info-item {
+      padding: 14px 16px;
+      background: rgba(15, 15, 25, 0.5);
+      border-radius: var(--radius-small);
+      border: 1px solid var(--border-normal);
+    }
+
+    .sys-info-item .info-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    .sys-info-item .info-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-heading);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+
+    .status-dot.green {
+      background: #34d399;
+      box-shadow: 0 0 6px rgba(52, 211, 153, 0.4);
+    }
+
+    .status-dot.yellow {
+      background: #fbbf24;
+    }
+
+    /* Form rows */
+    .settings-form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .settings-form-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .settings-form-row.single {
+      grid-template-columns: 1fr;
+    }
+
+    /* Checkbox row */
+    .checkbox-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-body-alt);
+      cursor: pointer;
+    }
+
+    .check-item .cb-box {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1.5px solid var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all var(--transition-fast);
+    }
+
+    .check-item.checked .cb-box {
+      background: var(--gradient-primary);
+      border-color: transparent;
+    }
+
+    .check-item .cb-box svg {
+      width: 10px;
+      height: 10px;
+      display: none;
+    }
+
+    .check-item.checked .cb-box svg {
+      display: block;
+    }
+
+    .check-item.checked {
+      color: var(--text-active);
+    }
+
+    /* User table */
+    .user-table-wrapper {
+      overflow-x: auto;
+      margin-bottom: 14px;
+    }
+
+    .user-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .user-action-btn {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      border: 1px solid transparent;
+    }
+
+    .user-action-btn:hover {
+      color: var(--text-heading);
+      background: rgba(139, 92, 246, 0.08);
+      border-color: var(--border-accent);
+    }
+
+    .user-action-btn.danger:hover {
+      color: #f87171;
+      background: rgba(248, 113, 113, 0.08);
+      border-color: rgba(248, 113, 113, 0.2);
+    }
+
+    .add-user-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: var(--radius-small);
+      border: 1px dashed var(--border-accent);
+      color: var(--text-tag);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      background: transparent;
+    }
+
+    .add-user-btn:hover {
+      background: rgba(139, 92, 246, 0.06);
+      border-color: var(--purple);
+    }
+
+    .save-section {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">✦</div>
+        <span class="logo-text">素材管理系统</span>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">主菜单</div>
+        <a class="nav-item" href="01-智能搜索.html"><span class="nav-icon">🔍</span> 智能搜索</a>
+        <a class="nav-item" href="02-素材库管理.html"><span class="nav-icon">📁</span> 素材库</a>
+        <a class="nav-item" href="03-项目管理.html"><span class="nav-icon">📋</span> 项目管理</a>
+        <a class="nav-item" href="04-人脸识别库.html"><span class="nav-icon">👤</span> 人脸识别库</a>
+        <a class="nav-item" href="05-数据分析.html"><span class="nav-icon">📊</span> 数据分析</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">系统</div>
+        <a class="nav-item active"><span class="nav-icon">⚙️</span> 设置</a>
+        <a class="nav-item" href="20-回收站.html"><span class="nav-icon">🗑️</span> 回收站</a>
+      </div>
+      <div class="sidebar-bottom">
+        <a class="sidebar-user" href="16-用户个人信息.html">
+          <div class="avatar">张</div>
+          <div>
+            <div class="user-name">张三</div>
+            <div class="user-role">管理员</div>
+          </div>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">系统设置 <span class="admin-badge">🔒 仅管理员可见</span></h1>
+          <p class="page-subtitle">管理系统配置、AI设置、存储和用户权限</p>
+        </div>
+      </div>
+
+      <div class="settings-grid">
+
+        <!-- System Info -->
+        <div class="settings-card">
+          <h3 class="settings-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            系统信息
+          </h3>
+          <div class="sys-info-grid">
+            <div class="sys-info-item">
+              <div class="info-label">系统版本</div>
+              <div class="info-value">v1.2.0</div>
+            </div>
+            <div class="sys-info-item">
+              <div class="info-label">NAS 地址</div>
+              <div class="info-value">192.168.10.10</div>
+            </div>
+            <div class="sys-info-item">
+              <div class="info-label">可用存储空间</div>
+              <div class="info-value">27.1 TB / 32 TB</div>
+            </div>
+            <div class="sys-info-item">
+              <div class="info-label">服务器状态</div>
+              <div class="info-value"><span class="status-dot green"></span> 运行正常</div>
+            </div>
+            <div class="sys-info-item">
+              <div class="info-label">数据库状态</div>
+              <div class="info-value"><span class="status-dot green"></span> 已连接</div>
+            </div>
+            <div class="sys-info-item">
+              <div class="info-label">AI 服务状态</div>
+              <div class="info-value"><span class="status-dot green"></span> 运行中</div>
+            </div>
+            <div class="sys-info-item">
+              <div class="info-label">10GbE 网络吞吐</div>
+              <div class="info-value">850 MB/s</div>
+            </div>
+            <div class="sys-info-item">
+              <div class="info-label">RAID 6 状态</div>
+              <div class="info-value"><span class="status-dot green"></span> 健康</div>
+            </div>
+            <div class="sys-info-item">
+              <div class="info-label">最近备份</div>
+              <div class="info-value">2小时前</div>
+            </div>
+            <div class="sys-info-item">
+              <div class="info-label">UPS 电池</div>
+              <div class="info-value">98% (正常)</div>
+            </div>
+            <div class="sys-info-item">
+              <div class="info-label">缓存自动清理</div>
+              <div class="info-value"><span class="status-dot green"></span> 已启用</div>
+            </div>
+            <div class="sys-info-item">
+              <div class="info-label">下次清理时间</div>
+              <div class="info-value">今晚 02:00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Settings -->
+        <div class="settings-card">
+          <h3 class="settings-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a4 4 0 014 4c0 1.95-1.4 3.58-3.25 3.93"/><path d="M8.56 9.93A4.002 4.002 0 0112 2"/><circle cx="12" cy="16" r="6"/><path d="M12 13v3l2 1"/></svg>
+            AI 设置
+          </h3>
+
+          <div class="form-group">
+            <label class="form-label">当前 AI 模型</label>
+            <div class="form-input" style="background: rgba(255, 255, 255, 0.05); color: var(--text-muted); border-color: transparent;">doubao-seed-1.8 (已锁定)</div>
+          </div>
+
+          <div class="checkbox-row">
+            <label class="check-item checked">
+              <span class="cb-box">
+                <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l3 3 5-5"/></svg>
+              </span>
+              自动分析新上传素材
+            </label>
+            <label class="check-item checked">
+              <span class="cb-box">
+                <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l3 3 5-5"/></svg>
+              </span>
+              自动分镜切割
+            </label>
+            <label class="check-item checked">
+              <span class="cb-box">
+                <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l3 3 5-5"/></svg>
+              </span>
+              自动人脸识别
+            </label>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">最大并发任务数</label>
+            <select class="form-select">
+              <option>3 个任务</option>
+              <option>5 个任务</option>
+              <option>10 个任务</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Storage Settings -->
+        <div class="settings-card">
+          <h3 class="settings-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 12H2"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/><line x1="6" y1="16" x2="6.01" y2="16"/><line x1="10" y1="16" x2="10.01" y2="16"/></svg>
+            存储设置
+          </h3>
+          <div class="settings-form-row">
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label">NAS 存储路径</label>
+              <input type="text" class="form-input" value="/volume1/media/materials">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label">缩略图缓存路径</label>
+              <input type="text" class="form-input" value="/volume1/cache/thumbnails">
+            </div>
+          </div>
+
+          <div style="margin-top:16px;display:flex;flex-direction:column;gap:12px;">
+            <label class="check-item checked">
+              <span class="cb-box">
+                <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l3 3 5-5"/></svg>
+              </span>
+              存储空间不足时发送警告通知
+            </label>
+            <label class="check-item checked">
+              <span class="cb-box">
+                <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l3 3 5-5"/></svg>
+              </span>
+              启用缓存自动清理（每日凌晨 2:00）
+            </label>
+          </div>
+          
+          <div style="margin-top:16px;padding:12px;background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.12);border-radius:8px;">
+            <div style="font-size:12px;font-weight:600;color:var(--text-heading);margin-bottom:6px;">💡 自动清理策略</div>
+            <div style="font-size:12px;color:var(--text-muted);line-height:1.6;">
+              • 清理超过 30 天未访问的缩略图缓存<br>
+              • 清理 AI 分析临时文件<br>
+              • 保留最近 7 天的系统日志
+            </div>
+          </div>
+        </div>
+
+        <!-- User Management -->
+        <div class="settings-card">
+          <h3 class="settings-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            用户管理
+          </h3>
+
+          <div class="user-table-wrapper">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>用户</th>
+                  <th>角色</th>
+                  <th>状态</th>
+                  <th>最后登录</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                      <div class="avatar" style="width:32px;height:32px;font-size:12px;">张</div>
+                      <div>
+                        <div style="font-weight:600;color:var(--text-heading);">张三</div>
+                        <div style="font-size:11px;color:var(--text-dim-alt);">zhangsan@company.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="badge green">管理员</span></td>
+                  <td><span style="display:flex;align-items:center;gap:5px;"><span class="status-dot green"></span> 在线</span></td>
+                  <td style="font-size:12px;color:var(--text-muted);">刚刚</td>
+                  <td>
+                    <div class="user-actions">
+                      <button class="user-action-btn">编辑</button>
+                      <button class="user-action-btn">重置密码</button>
+                      <button class="user-action-btn danger">禁用</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                      <div class="avatar" style="width:32px;height:32px;font-size:12px;background:linear-gradient(135deg,#3b82f6,#06b6d4);">李</div>
+                      <div>
+                        <div style="font-weight:600;color:var(--text-heading);">李四</div>
+                        <div style="font-size:11px;color:var(--text-dim-alt);">lisi@company.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="badge blue">剪辑师</span></td>
+                  <td><span style="display:flex;align-items:center;gap:5px;"><span class="status-dot green"></span> 在线</span></td>
+                  <td style="font-size:12px;color:var(--text-muted);">2小时前</td>
+                  <td>
+                    <div class="user-actions">
+                      <button class="user-action-btn">编辑</button>
+                      <button class="user-action-btn">重置密码</button>
+                      <button class="user-action-btn danger">禁用</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                      <div class="avatar" style="width:32px;height:32px;font-size:12px;background:linear-gradient(135deg,#f59e0b,#ef4444);">王</div>
+                      <div>
+                        <div style="font-weight:600;color:var(--text-heading);">王五</div>
+                        <div style="font-size:11px;color:var(--text-dim-alt);">wangwu@company.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="badge yellow">投放运营</span></td>
+                  <td><span style="display:flex;align-items:center;gap:5px;color:var(--text-dim-alt);"><span class="status-dot" style="background:var(--text-dim);"></span> 离线</span></td>
+                  <td style="font-size:12px;color:var(--text-muted);">昨天 18:30</td>
+                  <td>
+                    <div class="user-actions">
+                      <button class="user-action-btn">编辑</button>
+                      <button class="user-action-btn">重置密码</button>
+                      <button class="user-action-btn danger">禁用</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <button class="add-user-btn">+ 添加用户</button>
+        </div>
+
+        <!-- Save -->
+        <div class="save-section">
+          <button class="btn-primary" style="padding: 10px 36px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            保存设置
+          </button>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>

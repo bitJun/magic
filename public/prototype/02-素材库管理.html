@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>素材库管理 - 大魔王智能素材管理系统</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Grid View Styles */
+    .grid-view { display: none; }
+    .grid-view.active { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .grid-card {
+      background: var(--card-bg, rgba(15,15,25,0.7));
+      border: 1px solid var(--border-normal);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      transition: all var(--transition-fast);
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .grid-card:hover { border-color: var(--border-accent); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+    .grid-card .card-thumb {
+      position: relative;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      background: #1a1a2e;
+    }
+    .grid-card .card-thumb svg { width: 100%; height: 100%; }
+    .grid-card .card-thumb .status-pill {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      backdrop-filter: blur(8px);
+    }
+    .grid-card .card-thumb .status-pill.green { background: rgba(52,211,153,0.2); color: #34d399; }
+    .grid-card .card-thumb .status-pill.blue { background: rgba(96,165,250,0.2); color: #60a5fa; }
+    .grid-card .card-thumb .status-pill.gray { background: rgba(156,163,175,0.2); color: #9ca3af; }
+    .grid-card .card-thumb .status-pill.red { background: rgba(248,113,113,0.2); color: #f87171; }
+    .grid-card .card-thumb .duration-pill {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(0,0,0,0.7);
+      font-size: 11px;
+      color: #fff;
+      font-weight: 500;
+    }
+    .grid-card-body { padding: 14px; }
+    .grid-card-body .gc-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-heading);
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .grid-card-body .gc-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-dim-alt);
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .grid-card-body .gc-meta .project-tag {
+      padding: 1px 8px;
+      border-radius: 4px;
+      background: rgba(139,92,246,0.1);
+      color: var(--text-tag, #a78bfa);
+      font-size: 11px;
+    }
+    .grid-card-body .gc-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-normal);
+    }
+    .grid-card-body .gc-uploader {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-dim-alt);
+    }
+    .grid-card-body .gc-uploader .mini-avatar {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--gradient-secondary, linear-gradient(135deg,#ec4899,#8b5cf6));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: #fff;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .grid-card-body .gc-shots {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .grid-card-body .gc-shots strong { color: var(--text-heading); }
+    .data-table-wrapper.hidden { display: none; }
+    .toggle-btn.active {
+      background: rgba(139,92,246,0.15);
+      color: var(--text-active, #c4b5fd);
+      border-color: var(--purple, #8b5cf6);
+    }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">✦</div>
+      <div class="logo-text">
+        <span class="brand">大魔王</span>
+        <span class="subtitle">智能素材管理系统</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">核心功能</div>
+        <a href="01-智能搜索.html" class="nav-item">
+          <span class="nav-icon">🔍</span> 智能搜索
+        </a>
+        <a href="02-素材库管理.html" class="nav-item active">
+          <span class="nav-icon">📦</span> 素材库
+        </a>
+        <a href="03-项目管理.html" class="nav-item">
+          <span class="nav-icon">📁</span> 项目管理
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">智能工具</div>
+        <a href="04-人脸识别库.html" class="nav-item">
+          <span class="nav-icon">👤</span> 人脸识别库
+        </a>
+        <a href="05-数据分析.html" class="nav-item">
+          <span class="nav-icon">📊</span> 数据分析
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">系统</div>
+        <a href="20-回收站.html" class="nav-item">
+          <span class="nav-icon">🗑️</span> 回收站
+        </a>
+        <a href="15-设置页面.html" class="nav-item">
+          <span class="nav-icon">⚙️</span> 设置
+        </a>
+      </div>
+    </nav>
+
+    <a href="16-用户个人信息.html" class="sidebar-user">
+      <div class="user-avatar">张</div>
+      <div class="user-info">
+        <span class="user-name">张三</span>
+        <span class="user-role">管理员</span>
+      </div>
+    </a>
+  </aside>
+
+  <!-- ===== Main Content ===== -->
+  <main class="main-content">
+
+    <!-- Page Header -->
+    <header class="page-header">
+      <h1 class="page-title">素材库管理</h1>
+      <div class="page-actions">
+        <button class="btn btn-green" onclick="openModal('uploadModal')">+ 上传素材</button>
+      </div>
+    </header>
+
+    <div class="content-area">
+
+      <!-- Stat Cards -->
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-label">总素材数</div>
+          <div class="stat-value">2,345</div>
+          <span class="stat-change up">↑ +156 本周新增</span>
+          <div class="stat-icon purple">📦</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">总分镜数</div>
+          <div class="stat-value">15,678</div>
+          <span class="stat-change up">↑ +1,234 本周新增</span>
+          <div class="stat-icon blue">🎬</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">已用空间</div>
+          <div class="stat-value">4.95 TB</div>
+          <div class="stat-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 15%"></div>
+            </div>
+            <div class="progress-text">已用 15% / 总计 32TB</div>
+          </div>
+          <div class="stat-icon green">💾</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">素材复用率</div>
+          <div class="stat-value">78.5%</div>
+          <span class="stat-change up">↑ +12% 较上月</span>
+          <div class="stat-icon pink">♻️</div>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <select class="filter-select">
+          <option>全部项目</option>
+          <option>品牌广告A</option>
+          <option>产品宣传片B</option>
+          <option>短视频系列C</option>
+        </select>
+        <select class="filter-select">
+          <option>全部日期</option>
+          <option>今天</option>
+          <option>本周</option>
+          <option>本月</option>
+        </select>
+        <select class="filter-select">
+          <option>全部状态</option>
+          <option>已分析</option>
+          <option>分析中</option>
+          <option>待分析</option>
+          <option>分析失败</option>
+        </select>
+        <div class="view-toggle">
+          <button class="toggle-btn active" id="listViewBtn" onclick="switchView('list')">☰ 列表</button>
+          <button class="toggle-btn" id="gridViewBtn" onclick="switchView('grid')">⊞ 网格</button>
+        </div>
+        <div class="filter-spacer"></div>
+        <button class="btn btn-outline btn-sm">⬇ 批量下载</button>
+        <button class="btn btn-outline btn-sm">📤 导出</button>
+        <button class="btn btn-danger btn-sm">🔒 批量删除</button>
+        <div class="filter-divider"></div>
+        <a href="20-回收站.html" class="recycle-link">🗑️ 回收站</a>
+      </div>
+
+      <!-- Data Table -->
+      <div class="data-table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:40px"><input type="checkbox" class="checkbox"></th>
+              <th style="width:80px">预览</th>
+              <th>文件信息</th>
+              <th>时长</th>
+              <th>分镜数</th>
+              <th>上传时间</th>
+              <th>上传者</th>
+              <th>状态</th>
+              <th style="width:200px">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Row 1: 已分析 -->
+            <tr>
+              <td><input type="checkbox" class="checkbox"></td>
+              <td>
+                <div class="preview-thumb">
+                  <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="60" height="40" fill="#1a1a2e"/>
+                    <circle cx="20" cy="15" r="6" fill="#8b5cf6" opacity="0.6"/>
+                    <polygon points="10,35 30,20 50,35" fill="#a78bfa" opacity="0.4"/>
+                    <polygon points="25,35 40,22 55,35" fill="#ec4899" opacity="0.3"/>
+                  </svg>
+                </div>
+              </td>
+              <td>
+                <div class="file-info">
+                  <div class="file-name">品牌广告_最终版_v3.mp4</div>
+                  <div class="file-meta">
+                    <span>2.4 GB</span>
+                    <span>1920×1080</span>
+                    <span class="project-tag">品牌广告A</span>
+                  </div>
+                </div>
+              </td>
+              <td>03:24</td>
+              <td>156</td>
+              <td>2025-02-05 14:30</td>
+              <td>
+                <div class="uploader">
+                  <div class="uploader-avatar">张</div>
+                  <span>张三</span>
+                </div>
+              </td>
+              <td><span class="badge badge-green">✅ 已分析</span></td>
+              <td>
+                <div class="actions-cell">
+                  <a href="09-素材分镜列表页.html" class="btn btn-ghost btn-xs">查看分镜</a>
+                  <button class="btn btn-ghost btn-xs">下载</button>
+                  <button class="btn btn-danger btn-xs">🔒 删除</button>
+                </div>
+              </td>
+            </tr>
+            <!-- Row 2: 分析中 -->
+            <tr>
+              <td><input type="checkbox" class="checkbox"></td>
+              <td>
+                <div class="preview-thumb">
+                  <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="60" height="40" fill="#1a1a2e"/>
+                    <rect x="10" y="10" width="40" height="20" rx="3" fill="#3b82f6" opacity="0.3"/>
+                    <circle cx="30" cy="20" r="8" fill="#8b5cf6" opacity="0.5"/>
+                    <polygon points="27,16 27,24 35,20" fill="#fff" opacity="0.7"/>
+                  </svg>
+                </div>
+              </td>
+              <td>
+                <div class="file-info">
+                  <div class="file-name">产品展示_4K_raw.mov</div>
+                  <div class="file-meta">
+                    <span>5.8 GB</span>
+                    <span>3840×2160</span>
+                    <span class="project-tag">产品宣传片B</span>
+                  </div>
+                </div>
+              </td>
+              <td>05:12</td>
+              <td>—</td>
+              <td>2025-02-05 16:20</td>
+              <td>
+                <div class="uploader">
+                  <div class="uploader-avatar">李</div>
+                  <span>李四</span>
+                </div>
+              </td>
+              <td>
+                <div class="status-detail">
+                  <span class="badge badge-blue">⏳ 分析中</span>
+                  <div class="status-progress">
+                    排队第2位 · 65%
+                    <div class="mini-progress">
+                      <div class="mini-progress-fill" style="width: 65%"></div>
+                    </div>
+                  </div>
+                  <span style="font-size:11px;color:#888">预计2分钟</span>
+                </div>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <button class="btn btn-ghost btn-xs" disabled>查看分镜</button>
+                  <button class="btn btn-ghost btn-xs">下载</button>
+                  <button class="btn btn-danger btn-xs">🔒 删除</button>
+                </div>
+              </td>
+            </tr>
+            <!-- Row 3: 待分析 -->
+            <tr>
+              <td><input type="checkbox" class="checkbox"></td>
+              <td>
+                <div class="preview-thumb">
+                  <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="60" height="40" fill="#1a1a2e"/>
+                    <rect x="5" y="8" width="22" height="14" rx="2" fill="#6b7280" opacity="0.3"/>
+                    <rect x="33" y="18" width="22" height="14" rx="2" fill="#6b7280" opacity="0.3"/>
+                    <line x1="15" y1="28" x2="45" y2="12" stroke="#8b5cf6" stroke-width="1.5" opacity="0.4"/>
+                  </svg>
+                </div>
+              </td>
+              <td>
+                <div class="file-info">
+                  <div class="file-name">幕后花絮_draft.mp4</div>
+                  <div class="file-meta">
+                    <span>1.2 GB</span>
+                    <span>1920×1080</span>
+                    <span class="project-tag">短视频系列C</span>
+                  </div>
+                </div>
+              </td>
+              <td>02:08</td>
+              <td>—</td>
+              <td>2025-02-06 09:15</td>
+              <td>
+                <div class="uploader">
+                  <div class="uploader-avatar">王</div>
+                  <span>王五</span>
+                </div>
+              </td>
+              <td><span class="badge badge-gray">⏸️ 待分析</span></td>
+              <td>
+                <div class="actions-cell">
+                  <button class="btn btn-ghost btn-xs" disabled>查看分镜</button>
+                  <button class="btn btn-ghost btn-xs">下载</button>
+                  <button class="btn btn-danger btn-xs">🔒 删除</button>
+                </div>
+              </td>
+            </tr>
+            <!-- Row 4: 分析失败 -->
+            <tr>
+              <td><input type="checkbox" class="checkbox"></td>
+              <td>
+                <div class="preview-thumb">
+                  <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="60" height="40" fill="#1a1a2e"/>
+                    <circle cx="30" cy="20" r="12" fill="#ef4444" opacity="0.15"/>
+                    <text x="30" y="24" text-anchor="middle" font-size="14" fill="#ef4444" opacity="0.6">✕</text>
+                  </svg>
+                </div>
+              </td>
+              <td>
+                <div class="file-info">
+                  <div class="file-name">特效素材_alpha.avi</div>
+                  <div class="file-meta">
+                    <span>3.1 GB</span>
+                    <span>2560×1440</span>
+                    <span class="project-tag">品牌广告A</span>
+                  </div>
+                </div>
+              </td>
+              <td>01:45</td>
+              <td>—</td>
+              <td>2025-02-04 11:00</td>
+              <td>
+                <div class="uploader">
+                  <div class="uploader-avatar">赵</div>
+                  <span>赵六</span>
+                </div>
+              </td>
+              <td>
+                <div class="status-detail">
+                  <span class="badge badge-red">❌ 分析失败</span>
+                  <span class="status-error">已重试3次 · 原因：格式不支持</span>
+                </div>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <button class="btn btn-yellow btn-xs">⚡ 重新分析</button>
+                  <button class="btn btn-ghost btn-xs">下载</button>
+                  <button class="btn btn-danger btn-xs">🔒 删除</button>
+                </div>
+              </td>
+            </tr>
+            <!-- Row 5: 已分析 -->
+            <tr>
+              <td><input type="checkbox" class="checkbox"></td>
+              <td>
+                <div class="preview-thumb">
+                  <svg viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="60" height="40" fill="#1a1a2e"/>
+                    <rect x="5" y="5" width="50" height="30" rx="3" fill="#22c55e" opacity="0.12"/>
+                    <circle cx="18" cy="14" r="5" fill="#ec4899" opacity="0.5"/>
+                    <polygon points="8,32 25,18 38,26 55,12 55,32" fill="#8b5cf6" opacity="0.3"/>
+                  </svg>
+                </div>
+              </td>
+              <td>
+                <div class="file-info">
+                  <div class="file-name">城市航拍_sunset.mp4</div>
+                  <div class="file-meta">
+                    <span>4.2 GB</span>
+                    <span>3840×2160</span>
+                    <span class="project-tag">产品宣传片B</span>
+                  </div>
+                </div>
+              </td>
+              <td>08:36</td>
+              <td>342</td>
+              <td>2025-02-03 18:45</td>
+              <td>
+                <div class="uploader">
+                  <div class="uploader-avatar">张</div>
+                  <span>张三</span>
+                </div>
+              </td>
+              <td><span class="badge badge-green">✅ 已分析</span></td>
+              <td>
+                <div class="actions-cell">
+                  <a href="09-素材分镜列表页.html" class="btn btn-ghost btn-xs">查看分镜</a>
+                  <button class="btn btn-ghost btn-xs">下载</button>
+                  <button class="btn btn-danger btn-xs">🔒 删除</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Grid View (hidden by default) -->
+      <div class="grid-view" id="gridView">
+        <!-- Grid Card 1 -->
+        <a href="09-素材分镜列表页.html" class="grid-card">
+          <div class="card-thumb">
+            <svg viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="gg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1a1a2e"/><stop offset="100%" stop-color="#16213e"/></linearGradient><pattern id="gd1" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="0.8" fill="rgba(139,92,246,0.15)"/></pattern></defs>
+              <rect width="400" height="225" fill="url(#gg1)"/><rect width="400" height="225" fill="url(#gd1)"/>
+              <circle cx="200" cy="100" r="22" fill="rgba(139,92,246,0.12)" stroke="rgba(139,92,246,0.25)" stroke-width="1.5"/>
+              <polygon points="194,90 194,110 210,100" fill="rgba(255,255,255,0.5)"/>
+              <text x="200" y="155" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-size="11" font-family="sans-serif">品牌广告 v3</text>
+            </svg>
+            <span class="status-pill green">✅ 已分析</span>
+            <span class="duration-pill">03:24</span>
+          </div>
+          <div class="grid-card-body">
+            <div class="gc-name">品牌广告_最终版_v3.mp4</div>
+            <div class="gc-meta">
+              <span>2.4 GB</span><span>1920×1080</span>
+              <span class="project-tag">品牌广告A</span>
+            </div>
+            <div class="gc-bottom">
+              <div class="gc-uploader"><span class="mini-avatar">张</span> 张三</div>
+              <div class="gc-shots">分镜 <strong>156</strong></div>
+            </div>
+          </div>
+        </a>
+        <!-- Grid Card 2 -->
+        <div class="grid-card">
+          <div class="card-thumb">
+            <svg viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="gg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1a1a2e"/><stop offset="50%" stop-color="#1b1b30"/><stop offset="100%" stop-color="#16213e"/></linearGradient></defs>
+              <rect width="400" height="225" fill="url(#gg2)"/>
+              <rect x="120" y="60" width="160" height="100" rx="8" fill="rgba(59,130,246,0.06)" stroke="rgba(59,130,246,0.12)" stroke-width="1"/>
+              <circle cx="200" cy="100" r="22" fill="rgba(59,130,246,0.1)" stroke="rgba(59,130,246,0.2)" stroke-width="1.5"/>
+              <polygon points="194,90 194,110 210,100" fill="rgba(255,255,255,0.5)"/>
+              <text x="200" y="155" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-size="11" font-family="sans-serif">产品展示 4K</text>
+            </svg>
+            <span class="status-pill blue">⏳ 分析中 65%</span>
+            <span class="duration-pill">05:12</span>
+          </div>
+          <div class="grid-card-body">
+            <div class="gc-name">产品展示_4K_raw.mov</div>
+            <div class="gc-meta">
+              <span>5.8 GB</span><span>3840×2160</span>
+              <span class="project-tag">产品宣传片B</span>
+            </div>
+            <div class="gc-bottom">
+              <div class="gc-uploader"><span class="mini-avatar">李</span> 李四</div>
+              <div class="gc-shots" style="color:var(--text-tag);">分析中…</div>
+            </div>
+          </div>
+        </div>
+        <!-- Grid Card 3 -->
+        <div class="grid-card">
+          <div class="card-thumb">
+            <svg viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="225" fill="#1a1a2e"/>
+              <rect x="130" y="55" width="140" height="90" rx="6" fill="none" stroke="rgba(107,114,128,0.15)" stroke-width="1" stroke-dasharray="4,4"/>
+              <circle cx="200" cy="100" r="22" fill="rgba(107,114,128,0.08)" stroke="rgba(107,114,128,0.15)" stroke-width="1.5"/>
+              <polygon points="194,90 194,110 210,100" fill="rgba(255,255,255,0.35)"/>
+              <text x="200" y="155" text-anchor="middle" fill="rgba(255,255,255,0.12)" font-size="11" font-family="sans-serif">幕后花絮</text>
+            </svg>
+            <span class="status-pill gray">⏸️ 待分析</span>
+            <span class="duration-pill">02:08</span>
+          </div>
+          <div class="grid-card-body">
+            <div class="gc-name">幕后花絮_draft.mp4</div>
+            <div class="gc-meta">
+              <span>1.2 GB</span><span>1920×1080</span>
+              <span class="project-tag">短视频系列C</span>
+            </div>
+            <div class="gc-bottom">
+              <div class="gc-uploader"><span class="mini-avatar">王</span> 王五</div>
+              <div class="gc-shots" style="color:var(--text-muted);">待分析</div>
+            </div>
+          </div>
+        </div>
+        <!-- Grid Card 4 -->
+        <div class="grid-card">
+          <div class="card-thumb">
+            <svg viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="225" fill="#1a1a2e"/>
+              <circle cx="200" cy="100" r="32" fill="rgba(239,68,68,0.08)"/>
+              <text x="200" y="108" text-anchor="middle" font-size="28" fill="rgba(239,68,68,0.4)">✕</text>
+              <text x="200" y="155" text-anchor="middle" fill="rgba(255,255,255,0.12)" font-size="11" font-family="sans-serif">特效素材</text>
+            </svg>
+            <span class="status-pill red">❌ 分析失败</span>
+            <span class="duration-pill">01:45</span>
+          </div>
+          <div class="grid-card-body">
+            <div class="gc-name">特效素材_alpha.avi</div>
+            <div class="gc-meta">
+              <span>3.1 GB</span><span>2560×1440</span>
+              <span class="project-tag">品牌广告A</span>
+            </div>
+            <div class="gc-bottom">
+              <div class="gc-uploader"><span class="mini-avatar">赵</span> 赵六</div>
+              <div class="gc-shots" style="color:#f87171;">已失败</div>
+            </div>
+          </div>
+        </div>
+        <!-- Grid Card 5 -->
+        <a href="09-素材分镜列表页.html" class="grid-card">
+          <div class="card-thumb">
+            <svg viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="gg5" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#16213e"/><stop offset="100%" stop-color="#1e1640"/></linearGradient></defs>
+              <rect width="400" height="225" fill="url(#gg5)"/>
+              <circle cx="180" cy="80" r="12" fill="rgba(236,72,153,0.15)"/>
+              <polygon points="140,190 200,100 260,160 320,120 320,190" fill="rgba(139,92,246,0.1)" stroke="rgba(139,92,246,0.15)" stroke-width="1"/>
+              <circle cx="200" cy="100" r="22" fill="rgba(139,92,246,0.1)" stroke="rgba(139,92,246,0.2)" stroke-width="1.5"/>
+              <polygon points="194,90 194,110 210,100" fill="rgba(255,255,255,0.5)"/>
+              <text x="200" y="155" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-size="11" font-family="sans-serif">城市航拍</text>
+            </svg>
+            <span class="status-pill green">✅ 已分析</span>
+            <span class="duration-pill">08:36</span>
+          </div>
+          <div class="grid-card-body">
+            <div class="gc-name">城市航拍_sunset.mp4</div>
+            <div class="gc-meta">
+              <span>4.2 GB</span><span>3840×2160</span>
+              <span class="project-tag">产品宣传片B</span>
+            </div>
+            <div class="gc-bottom">
+              <div class="gc-uploader"><span class="mini-avatar">张</span> 张三</div>
+              <div class="gc-shots">分镜 <strong>342</strong></div>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <div class="pagination-info">
+          共 <strong>2,345</strong> 个素材 · 第 <strong>1</strong> / <strong>47</strong> 页
+          <select class="filter-select" style="margin-left:12px;padding:4px 8px;font-size:12px;">
+            <option>每页 10 条</option>
+            <option selected>每页 50 条</option>
+            <option>每页 100 条</option>
+          </select>
+        </div>
+        <div class="pagination-buttons">
+          <button class="page-btn" disabled>‹</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn">4</button>
+          <button class="page-btn">5</button>
+          <button class="page-btn">…</button>
+          <button class="page-btn">47</button>
+          <button class="page-btn">›</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+<!-- ===== Upload Modal Overlay ===== -->
+<div class="modal-overlay" id="uploadModal">
+  <div class="modal" style="max-width:700px;width:92%;padding:0;">
+    <div class="modal-inner" style="padding:28px;">
+      <div class="modal-header">
+        <h2 class="modal-title">上传素材</h2>
+        <button class="modal-close" onclick="closeModal('uploadModal')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:600;color:var(--text-heading);margin-bottom:10px;">选择所属项目（可多选）</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+          <label style="display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--radius-small);background:rgba(139,92,246,0.1);border:1px solid var(--purple);font-size:13px;color:var(--text-active);cursor:pointer;">
+            <span style="width:16px;height:16px;border-radius:4px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;"><path d="M2 6l3 3 5-5"/></svg>
+            </span>
+            品牌广告A
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--radius-small);background:rgba(15,15,25,0.6);border:1px solid var(--border-color);font-size:13px;color:var(--text-body);cursor:pointer;">口红系列</label>
+          <label style="display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--radius-small);background:rgba(15,15,25,0.6);border:1px solid var(--border-color);font-size:13px;color:var(--text-body);cursor:pointer;">眼影系列</label>
+          <label style="display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--radius-small);background:rgba(15,15,25,0.6);border:1px solid var(--border-color);font-size:13px;color:var(--text-body);cursor:pointer;">面膜系列</label>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;margin-top:8px;">
+          <span style="font-size:12px;color:var(--text-tag);cursor:pointer;" onclick="closeModal('uploadModal');openModal('newProjectModal')">+ 快速创建新项目</span>
+          <span style="font-size:11px;color:var(--text-dim-alt);">不选择任何项目将自动归入「未分类」</span>
+        </div>
+      </div>
+
+      <div style="border:2px dashed rgba(139,92,246,0.25);border-radius:var(--radius-card);padding:36px 24px;text-align:center;margin-bottom:20px;background:rgba(139,92,246,0.03);cursor:pointer;">
+        <div style="width:56px;height:56px;margin:0 auto 14px;border-radius:50%;background:rgba(139,92,246,0.1);display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:28px;height:28px;color:var(--text-tag);">
+            <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-5l-2-2H5a2 2 0 00-2 2z"/>
+            <path d="M12 11v6M9 14l3-3 3 3"/>
+          </svg>
+        </div>
+        <div style="font-size:14px;color:var(--text-body-alt);margin-bottom:14px;">拖拽文件或文件夹到这里上传</div>
+        <div style="display:flex;justify-content:center;gap:10px;">
+          <button style="padding:7px 18px;font-size:13px;font-weight:500;border-radius:var(--radius-small);border:1px solid var(--border-accent);background:rgba(139,92,246,0.08);color:var(--text-active);cursor:pointer;">选择文件</button>
+          <button style="padding:7px 18px;font-size:13px;font-weight:500;border-radius:var(--radius-small);border:1px solid var(--border-accent);background:rgba(139,92,246,0.08);color:var(--text-active);cursor:pointer;">选择文件夹</button>
+        </div>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:600;color:var(--text-heading);margin-bottom:10px;">已选文件（3个）</div>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:var(--radius-small);background:rgba(15,15,25,0.5);border:1px solid var(--border-color);margin-bottom:8px;">
+          <div style="width:44px;height:34px;border-radius:6px;background:var(--gradient-secondary);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">🎬</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:500;color:var(--text-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">护肤品_涂抹质地_01.mp4</div>
+            <div style="font-size:11px;color:var(--text-dim-alt);margin-top:2px;">MP4 · 128.5 MB · 1920×1080</div>
+          </div>
+          <span style="font-size:12px;font-weight:600;color:#34d399;padding:2px 10px;border-radius:6px;background:rgba(52,211,153,0.1);">就绪</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:var(--radius-small);background:rgba(15,15,25,0.5);border:1px solid var(--border-color);margin-bottom:8px;">
+          <div style="width:44px;height:34px;border-radius:6px;background:var(--gradient-secondary);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">🎬</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:500;color:var(--text-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">口红色号对比_广告素材.mov</div>
+            <div style="font-size:11px;color:var(--text-dim-alt);margin-top:2px;">MOV · 256.8 MB · 3840×2160</div>
+          </div>
+          <span style="font-size:12px;font-weight:600;color:var(--text-tag);">上传中 45%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:var(--radius-small);background:rgba(15,15,25,0.5);border:1px solid var(--border-color);margin-bottom:8px;">
+          <div style="width:44px;height:34px;border-radius:6px;background:var(--gradient-secondary);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">🎬</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:500;color:var(--text-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">眼影盘_特写_慢镜头.mp4</div>
+            <div style="font-size:11px;color:var(--text-dim-alt);margin-top:2px;">MP4 · 89.2 MB · 1920×1080</div>
+          </div>
+          <span style="font-size:12px;font-weight:600;color:#34d399;padding:2px 10px;border-radius:6px;background:rgba(52,211,153,0.1);">就绪</span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('uploadModal')">取消</button>
+        <button class="btn-primary">开始上传</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.modal-overlay').forEach(function(el) {
+  el.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
+});
+
+function switchView(mode) {
+  var tableWrapper = document.querySelector('.data-table-wrapper');
+  var gridView = document.getElementById('gridView');
+  var listBtn = document.getElementById('listViewBtn');
+  var gridBtn = document.getElementById('gridViewBtn');
+  if (mode === 'grid') {
+    tableWrapper.classList.add('hidden');
+    gridView.classList.add('active');
+    listBtn.classList.remove('active');
+    gridBtn.classList.add('active');
+  } else {
+    tableWrapper.classList.remove('hidden');
+    gridView.classList.remove('active');
+    listBtn.classList.add('active');
+    gridBtn.classList.remove('active');
+  }
+}
+</script>
+</body>
+</html>

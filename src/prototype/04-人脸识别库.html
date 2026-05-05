@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>人脸识别库 - 大魔王智能素材管理系统</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── Face Library Page Enhancements ── */
+
+    /* Face card enhancements */
+    .face-card {
+      position: relative;
+      overflow: hidden;
+    }
+    .face-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: linear-gradient(180deg, rgba(139,92,246,0.06) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .face-card:hover::before {
+      background: linear-gradient(180deg, rgba(139,92,246,0.12) 0%, transparent 100%);
+    }
+    .face-avatar {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 3px rgba(139,92,246,0.15);
+      position: relative;
+      z-index: 1;
+    }
+    .face-card:hover .face-avatar {
+      box-shadow: 0 8px 24px rgba(139,92,246,0.25), 0 0 0 3px rgba(139,92,246,0.3);
+      transform: scale(1.05);
+      transition: all 0.3s ease;
+    }
+    .face-avatar.unknown-avatar {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 3px rgba(234,179,8,0.15);
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 3px rgba(234,179,8,0.15); }
+      50% { box-shadow: 0 8px 24px rgba(234,179,8,0.15), 0 0 0 5px rgba(234,179,8,0.25); }
+    }
+
+    /* Face stats bar */
+    .face-stats {
+      width: 100%;
+      padding: 0 12px;
+    }
+    .face-stats span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .face-stat-bar {
+      width: 100%;
+      height: 3px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+    .face-stat-bar .fill {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--gradient-primary);
+      transition: width 0.6s ease;
+    }
+
+    /* Enhanced badges */
+    .badge.badge-blue {
+      background: rgba(59,130,246,0.12);
+      color: #60a5fa;
+      border: 1px solid rgba(59,130,246,0.2);
+    }
+    .badge.badge-gold {
+      background: rgba(245,158,11,0.12);
+      color: #fbbf24;
+      border: 1px solid rgba(245,158,11,0.2);
+    }
+    .badge.badge-gray {
+      background: rgba(107,114,128,0.12);
+      color: #9ca3af;
+      border: 1px solid rgba(107,114,128,0.2);
+    }
+    .badge.badge-yellow {
+      background: rgba(234,179,8,0.12);
+      color: #fbbf24;
+      border: 1px solid rgba(234,179,8,0.2);
+    }
+
+    /* Summary insight */
+    .insight-box {
+      background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(236,72,153,0.04));
+      border: 1px solid rgba(139,92,246,0.15);
+      border-radius: var(--radius-card);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .insight-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .insight-text {
+      font-size: 13px;
+      color: var(--text-body);
+      line-height: 1.6;
+    }
+    .insight-text strong {
+      color: var(--text-heading);
+    }
+    .insight-text .highlight {
+      color: var(--accent-light);
+      font-weight: 600;
+    }
+
+    /* 5-column grid responsive */
+    .cards-grid.cols-5 {
+      grid-template-columns: repeat(5, 1fr);
+    }
+    @media (max-width: 1400px) {
+      .cards-grid.cols-5 { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (max-width: 1100px) {
+      .cards-grid.cols-5 { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 800px) {
+      .cards-grid.cols-5 { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">✦</div>
+      <div class="logo-text">
+        <span class="brand">大魔王</span>
+        <span class="subtitle">智能素材管理系统</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">核心功能</div>
+        <a href="01-智能搜索.html" class="nav-item">
+          <span class="nav-icon">🔍</span> 智能搜索
+        </a>
+        <a href="02-素材库管理.html" class="nav-item">
+          <span class="nav-icon">📦</span> 素材库
+        </a>
+        <a href="03-项目管理.html" class="nav-item">
+          <span class="nav-icon">📁</span> 项目管理
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">智能工具</div>
+        <a href="04-人脸识别库.html" class="nav-item active">
+          <span class="nav-icon">👤</span> 人脸识别库
+        </a>
+        <a href="05-数据分析.html" class="nav-item">
+          <span class="nav-icon">📊</span> 数据分析
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">系统</div>
+        <a href="20-回收站.html" class="nav-item">
+          <span class="nav-icon">🗑️</span> 回收站
+        </a>
+        <a href="15-设置页面.html" class="nav-item">
+          <span class="nav-icon">⚙️</span> 设置
+        </a>
+      </div>
+    </nav>
+
+    <a href="16-用户个人信息.html" class="sidebar-user">
+      <div class="user-avatar">张</div>
+      <div class="user-info">
+        <span class="user-name">张三</span>
+        <span class="user-role">管理员</span>
+      </div>
+    </a>
+  </aside>
+
+  <!-- ===== Main Content ===== -->
+  <main class="main-content">
+
+    <!-- Page Header -->
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">人脸识别库</h1>
+        <div class="page-subtitle">AI自动识别 · 人脸智能匹配 · 分镜级关联</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-green" onclick="openModal('18a-添加人物弹窗.html')">+ 添加人物</button>
+        <button class="btn btn-outline" onclick="openModal('18d-批量标注弹窗.html')">批量标注 (28)</button>
+        <button class="btn btn-outline" onclick="openModal('18e-合并人物弹窗.html')">合并人物</button>
+      </div>
+    </header>
+
+    <div class="content-area">
+
+      <!-- AI Insight -->
+      <div class="insight-box">
+        <div class="insight-icon">✦</div>
+        <div class="insight-text">
+          本周AI自动识别 <strong>12</strong> 个新面孔，其中 <span class="highlight">8</span> 个已自动匹配到已知人物，<span class="highlight">4</span> 个待人工确认标注。识别准确率 <strong>96.5%</strong>。
+        </div>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-label">识别人物总数</div>
+          <div class="stat-value">156</div>
+          <span class="stat-change up">↑ +12 本月新增</span>
+          <div class="stat-icon purple">👤</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">已标注</div>
+          <div class="stat-value">128</div>
+          <span class="stat-change up" style="color: var(--green)">82% 完成率</span>
+          <div class="stat-icon green">✅</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">待标注</div>
+          <div class="stat-value">28</div>
+          <span class="stat-change" style="color: var(--orange)">18% 待处理</span>
+          <div class="stat-icon orange">⏳</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">关联分镜</div>
+          <div class="stat-value">8,945</div>
+          <span class="stat-change up">↑ +356 本月</span>
+          <div class="stat-icon blue">🎬</div>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <select class="filter-select">
+          <option>全部分类</option>
+          <option>模特</option>
+          <option>演员</option>
+          <option>工作人员</option>
+          <option>待标注</option>
+        </select>
+        <select class="filter-select">
+          <option>按出镜次数排序</option>
+          <option>按名称排序</option>
+          <option>按最近出镜</option>
+          <option>按添加时间</option>
+        </select>
+        <input type="text" class="filter-input" placeholder="🔍 搜索人物姓名...">
+        <div class="filter-spacer"></div>
+      </div>
+
+      <!-- Face Cards Grid -->
+      <div class="cards-grid cols-5">
+
+        <!-- Face 1 -->
+        <div class="face-card">
+          <div class="face-avatar" style="background: linear-gradient(135deg, #8b5cf6, #6366f1)">林</div>
+          <div class="face-name">林小美</div>
+          <span class="badge badge-blue">模特</span>
+          <div class="face-stats">
+            <span>出镜分镜 <strong style="color: var(--text-primary)">342</strong></span>
+            <span>最近出镜 2025-02-05</span>
+            <div class="face-stat-bar"><div class="fill" style="width:73%;"></div></div>
+          </div>
+          <div class="face-actions">
+            <a href="17-人物分镜列表页.html" class="btn btn-ghost btn-xs">查看分镜</a>
+            <button class="btn btn-outline btn-xs" onclick="openModal('18b-编辑人物信息弹窗.html')">编辑信息</button>
+          </div>
+        </div>
+
+        <!-- Face 2 -->
+        <div class="face-card">
+          <div class="face-avatar" style="background: linear-gradient(135deg, #ec4899, #f43f5e)">陈</div>
+          <div class="face-name">陈大伟</div>
+          <span class="badge badge-gold">演员</span>
+          <div class="face-stats">
+            <span>出镜分镜 <strong style="color: var(--text-primary)">289</strong></span>
+            <span>最近出镜 2025-02-04</span>
+            <div class="face-stat-bar"><div class="fill" style="width:62%;"></div></div>
+          </div>
+          <div class="face-actions">
+            <a href="17-人物分镜列表页.html" class="btn btn-ghost btn-xs">查看分镜</a>
+            <button class="btn btn-outline btn-xs" onclick="openModal('18b-编辑人物信息弹窗.html')">编辑信息</button>
+          </div>
+        </div>
+
+        <!-- Face 3 -->
+        <div class="face-card">
+          <div class="face-avatar" style="background: linear-gradient(135deg, #3b82f6, #06b6d4)">王</div>
+          <div class="face-name">王摄影</div>
+          <span class="badge badge-gray">工作人员</span>
+          <div class="face-stats">
+            <span>出镜分镜 <strong style="color: var(--text-primary)">56</strong></span>
+            <span>最近出镜 2025-02-03</span>
+            <div class="face-stat-bar"><div class="fill" style="width:12%;"></div></div>
+          </div>
+          <div class="face-actions">
+            <a href="17-人物分镜列表页.html" class="btn btn-ghost btn-xs">查看分镜</a>
+            <button class="btn btn-outline btn-xs" onclick="openModal('18b-编辑人物信息弹窗.html')">编辑信息</button>
+          </div>
+        </div>
+
+        <!-- Face 4 -->
+        <div class="face-card">
+          <div class="face-avatar" style="background: linear-gradient(135deg, #22c55e, #10b981)">赵</div>
+          <div class="face-name">赵薇薇</div>
+          <span class="badge badge-blue">模特</span>
+          <div class="face-stats">
+            <span>出镜分镜 <strong style="color: var(--text-primary)">198</strong></span>
+            <span>最近出镜 2025-02-06</span>
+            <div class="face-stat-bar"><div class="fill" style="width:42%;"></div></div>
+          </div>
+          <div class="face-actions">
+            <a href="17-人物分镜列表页.html" class="btn btn-ghost btn-xs">查看分镜</a>
+            <button class="btn btn-outline btn-xs" onclick="openModal('18b-编辑人物信息弹窗.html')">编辑信息</button>
+          </div>
+        </div>
+
+        <!-- Face 5 -->
+        <div class="face-card">
+          <div class="face-avatar" style="background: linear-gradient(135deg, #f59e0b, #ef4444)">刘</div>
+          <div class="face-name">刘德华</div>
+          <span class="badge badge-gold">演员</span>
+          <div class="face-stats">
+            <span>出镜分镜 <strong style="color: var(--text-primary)">467</strong></span>
+            <span>最近出镜 2025-02-06</span>
+            <div class="face-stat-bar"><div class="fill" style="width:100%;"></div></div>
+          </div>
+          <div class="face-actions">
+            <a href="17-人物分镜列表页.html" class="btn btn-ghost btn-xs">查看分镜</a>
+            <button class="btn btn-outline btn-xs" onclick="openModal('18b-编辑人物信息弹窗.html')">编辑信息</button>
+          </div>
+        </div>
+
+        <!-- Face 6 -->
+        <div class="face-card">
+          <div class="face-avatar" style="background: linear-gradient(135deg, #a78bfa, #8b5cf6)">周</div>
+          <div class="face-name">周小婷</div>
+          <span class="badge badge-blue">模特</span>
+          <div class="face-stats">
+            <span>出镜分镜 <strong style="color: var(--text-primary)">134</strong></span>
+            <span>最近出镜 2025-02-01</span>
+            <div class="face-stat-bar"><div class="fill" style="width:29%;"></div></div>
+          </div>
+          <div class="face-actions">
+            <a href="17-人物分镜列表页.html" class="btn btn-ghost btn-xs">查看分镜</a>
+            <button class="btn btn-outline btn-xs" onclick="openModal('18b-编辑人物信息弹窗.html')">编辑信息</button>
+          </div>
+        </div>
+
+        <!-- Face 7 -->
+        <div class="face-card">
+          <div class="face-avatar" style="background: linear-gradient(135deg, #06b6d4, #3b82f6)">孙</div>
+          <div class="face-name">孙导演</div>
+          <span class="badge badge-gray">工作人员</span>
+          <div class="face-stats">
+            <span>出镜分镜 <strong style="color: var(--text-primary)">89</strong></span>
+            <span>最近出镜 2025-01-30</span>
+            <div class="face-stat-bar"><div class="fill" style="width:19%;"></div></div>
+          </div>
+          <div class="face-actions">
+            <a href="17-人物分镜列表页.html" class="btn btn-ghost btn-xs">查看分镜</a>
+            <button class="btn btn-outline btn-xs" onclick="openModal('18b-编辑人物信息弹窗.html')">编辑信息</button>
+          </div>
+        </div>
+
+        <!-- Face 8 -->
+        <div class="face-card">
+          <div class="face-avatar" style="background: linear-gradient(135deg, #ec4899, #a855f7)">吴</div>
+          <div class="face-name">吴佳琳</div>
+          <span class="badge badge-gold">演员</span>
+          <div class="face-stats">
+            <span>出镜分镜 <strong style="color: var(--text-primary)">215</strong></span>
+            <span>最近出镜 2025-02-02</span>
+            <div class="face-stat-bar"><div class="fill" style="width:46%;"></div></div>
+          </div>
+          <div class="face-actions">
+            <a href="17-人物分镜列表页.html" class="btn btn-ghost btn-xs">查看分镜</a>
+            <button class="btn btn-outline btn-xs" onclick="openModal('18b-编辑人物信息弹窗.html')">编辑信息</button>
+          </div>
+        </div>
+
+        <!-- Face 9: 待标注 -->
+        <div class="face-card unknown">
+          <div class="face-avatar unknown-avatar">❓</div>
+          <div class="face-name">未知人物 #1</div>
+          <span class="badge badge-yellow">待标注</span>
+          <div class="face-stats">
+            <span>出镜分镜 <strong style="color: var(--text-primary)">23</strong></span>
+            <span>首次出现 2025-02-04</span>
+          </div>
+          <div class="face-actions">
+            <button class="btn btn-yellow btn-xs" onclick="openModal('18c-人脸标注弹窗.html')">立即标注</button>
+          </div>
+        </div>
+
+        <!-- Face 10: 待标注 -->
+        <div class="face-card unknown">
+          <div class="face-avatar unknown-avatar">❓</div>
+          <div class="face-name">未知人物 #2</div>
+          <span class="badge badge-yellow">待标注</span>
+          <div class="face-stats">
+            <span>出镜分镜 <strong style="color: var(--text-primary)">8</strong></span>
+            <span>首次出现 2025-02-06</span>
+          </div>
+          <div class="face-actions">
+            <button class="btn btn-yellow btn-xs" onclick="openModal('18c-人脸标注弹窗.html')">立即标注</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <div class="pagination-info">共 <strong>156</strong> 个人物 · 第 <strong>1</strong> / <strong>16</strong> 页</div>
+        <div class="pagination-buttons">
+          <button class="page-btn" disabled>‹</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn">4</button>
+          <button class="page-btn">5</button>
+          <button class="page-btn">…</button>
+          <button class="page-btn">16</button>
+          <button class="page-btn">›</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+<!-- ===== Iframe Modal Container ===== -->
+<div class="modal-overlay" id="iframeModal">
+  <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+    <iframe id="modalFrame" style="width: 100%; height: 100%; border: none; background: transparent;"></iframe>
+  </div>
+</div>
+
+<script>
+function openModal(url) {
+  const modal = document.getElementById('iframeModal');
+  const frame = document.getElementById('modalFrame');
+  frame.src = url;
+  modal.classList.add('active');
+}
+
+function closeModal() {
+  const modal = document.getElementById('iframeModal');
+  const frame = document.getElementById('modalFrame');
+  modal.classList.remove('active');
+  setTimeout(() => { frame.src = ''; }, 300); // Clear src after animation
+}
+
+// Listen for close messages from iframe
+window.addEventListener('message', function(event) {
+  if (event.data === 'closeModal' || (event.data && event.data.action === 'closeModal')) {
+    closeModal();
+  }
+});
+
+// Close on click outside (optional, but since iframe covers 100%, click outside is hard to detect unless iframe body handles it)
+// For now, rely on close buttons inside iframe
+</script>
+</body>
+</html>

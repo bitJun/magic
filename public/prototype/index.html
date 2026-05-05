@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智能素材管理系统 - 原型导航</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── Portal / Hub Page Specific ── */
+    .portal-page {
+      min-height: 100vh;
+      background: var(--bg-body);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Ambient glow orbs */
+    .portal-page::before,
+    .portal-page::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(120px);
+      z-index: 0;
+    }
+    .portal-page::before {
+      width: 500px; height: 500px;
+      top: -120px; left: -80px;
+      background: rgba(139, 92, 246, 0.08);
+    }
+    .portal-page::after {
+      width: 400px; height: 400px;
+      bottom: -100px; right: -60px;
+      background: rgba(236, 72, 153, 0.06);
+    }
+
+    .portal-content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    /* Hero */
+    .portal-hero {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .portal-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px; height: 64px;
+      border-radius: 18px;
+      background: var(--gradient-primary);
+      font-size: 28px;
+      color: #fff;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 32px rgba(139, 92, 246, 0.3);
+    }
+    .portal-title {
+      font-size: 36px;
+      font-weight: 800;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    .portal-subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+    .portal-version {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+      padding: 4px 14px;
+      border-radius: 20px;
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.18);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-tag);
+    }
+
+    /* Category Sections */
+    .portal-section {
+      margin-bottom: 40px;
+    }
+    .portal-section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-normal);
+    }
+    .portal-section-icon {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-small);
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .portal-section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-heading);
+    }
+    .portal-section-count {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 2px 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* Page Link Cards */
+    .page-links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+    .page-link-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 18px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-normal);
+      border-radius: var(--radius-card);
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      text-decoration: none;
+      color: inherit;
+    }
+    .page-link-card:hover {
+      border-color: var(--border-accent-strong);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(139, 92, 246, 0.12);
+      background: rgba(25, 25, 45, 0.9);
+    }
+    .page-link-num {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-small);
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-tag);
+      flex-shrink: 0;
+    }
+    .page-link-card:hover .page-link-num {
+      background: var(--gradient-primary);
+      color: #fff;
+      border-color: transparent;
+    }
+    .page-link-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .page-link-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-heading);
+      margin-bottom: 4px;
+    }
+    .page-link-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .page-link-badge {
+      flex-shrink: 0;
+      align-self: center;
+    }
+
+    /* Flow Chart */
+    .flow-section {
+      margin-bottom: 48px;
+    }
+    .flow-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-normal);
+      border-radius: var(--radius-card);
+    }
+    .flow-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .flow-node {
+      padding: 12px 22px;
+      border-radius: var(--radius-button);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-heading);
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      white-space: nowrap;
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    .flow-node:hover {
+      background: rgba(139, 92, 246, 0.2);
+      border-color: rgba(139, 92, 246, 0.4);
+      transform: translateY(-1px);
+    }
+    .flow-node.primary {
+      background: var(--gradient-primary);
+      border: none;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25);
+    }
+    .flow-node.modal {
+      background: rgba(236, 72, 153, 0.1);
+      border-color: rgba(236, 72, 153, 0.2);
+      color: #f0abfc;
+      font-size: 12px;
+      padding: 8px 16px;
+    }
+    .flow-node.modal:hover {
+      background: rgba(236, 72, 153, 0.2);
+      border-color: rgba(236, 72, 153, 0.4);
+    }
+    .flow-arrow {
+      color: var(--text-dim);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .flow-arrow-down {
+      color: var(--text-dim);
+      font-size: 18px;
+      text-align: center;
+    }
+    .flow-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: -8px;
+    }
+    .flow-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .flow-group-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .flow-group-items {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* Changelog */
+    .changelog {
+      margin-top: 24px;
+      padding: 28px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-normal);
+      border-radius: var(--radius-card);
+    }
+    .changelog-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .changelog-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-heading);
+    }
+    .changelog-ver {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-tag);
+      padding: 2px 10px;
+      border-radius: 6px;
+      background: rgba(139, 92, 246, 0.1);
+    }
+    .changelog-date {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+    .changelog-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .changelog-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-body-alt);
+      line-height: 1.5;
+    }
+    .changelog-item .cl-type {
+      flex-shrink: 0;
+      padding: 1px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .changelog-item .cl-type.new {
+      color: #34d399;
+      background: rgba(52, 211, 153, 0.12);
+    }
+    .changelog-item .cl-type.fix {
+      color: #60a5fa;
+      background: rgba(96, 165, 250, 0.12);
+    }
+    .changelog-item .cl-type.improve {
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.12);
+    }
+
+    /* Footer */
+    .portal-footer {
+      margin-top: 48px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+    .portal-footer a {
+      color: var(--text-tag);
+      transition: color var(--transition-fast);
+    }
+    .portal-footer a:hover {
+      color: #c4b5fd;
+    }
+  </style>
+</head>
+<body>
+  <!-- Decorative Particles -->
+  <div class="particle" style="top:10%;left:5%;width:3px;height:3px;"></div>
+  <div class="particle" style="top:25%;right:8%;width:5px;height:5px;"></div>
+  <div class="particle" style="top:60%;left:12%;width:4px;height:4px;"></div>
+  <div class="particle" style="top:80%;right:15%;width:3px;height:3px;"></div>
+  <div class="particle" style="top:45%;left:90%;width:4px;height:4px;"></div>
+
+  <div class="portal-page">
+    <div class="portal-content">
+
+      <!-- ═══ Hero ═══ -->
+      <div class="portal-hero">
+        <div class="portal-logo">✦</div>
+        <h1 class="portal-title">智能素材管理系统</h1>
+        <p class="portal-subtitle">原型导航 · 交互设计稿 · 全页面索引</p>
+        <div class="portal-version">✦ 版本 v1.1 · 共 20 个页面</div>
+      </div>
+
+      <!-- ═══ 系统入口 ═══ -->
+      <div class="portal-section">
+        <div class="portal-section-header">
+          <div class="portal-section-icon">🚪</div>
+          <h2 class="portal-section-title">系统入口</h2>
+          <span class="portal-section-count">1 个页面</span>
+        </div>
+        <div class="page-links-grid">
+          <a href="06-登录.html" class="page-link-card">
+            <div class="page-link-num">06</div>
+            <div class="page-link-info">
+              <div class="page-link-name">登录页面</div>
+              <div class="page-link-desc">系统入口，包含账号密码登录、记住密码和忘记密码功能</div>
+            </div>
+            <span class="badge green page-link-badge">入口</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ═══ 核心模块 ═══ -->
+      <div class="portal-section">
+        <div class="portal-section-header">
+          <div class="portal-section-icon">⚡</div>
+          <h2 class="portal-section-title">核心模块</h2>
+          <span class="portal-section-count">6 个页面</span>
+        </div>
+        <div class="page-links-grid">
+          <a href="01-智能搜索.html" class="page-link-card">
+            <div class="page-link-num">01</div>
+            <div class="page-link-info">
+              <div class="page-link-name">智能搜索</div>
+              <div class="page-link-desc">核心搜索页面，支持文字/图片/视频多模态搜索，AI标签推荐</div>
+            </div>
+            <span class="badge blue page-link-badge">核心</span>
+          </a>
+          <a href="02-素材库管理.html" class="page-link-card">
+            <div class="page-link-num">02</div>
+            <div class="page-link-info">
+              <div class="page-link-name">素材库</div>
+              <div class="page-link-desc">素材管理中心，支持分类浏览、筛选、批量操作</div>
+            </div>
+            <span class="badge blue page-link-badge">核心</span>
+          </a>
+          <a href="03-项目管理.html" class="page-link-card">
+            <div class="page-link-num">03</div>
+            <div class="page-link-info">
+              <div class="page-link-name">项目管理</div>
+              <div class="page-link-desc">项目列表与管理，关联素材和人脸数据</div>
+            </div>
+            <span class="badge blue page-link-badge">核心</span>
+          </a>
+          <a href="04-人脸识别库.html" class="page-link-card">
+            <div class="page-link-num">04</div>
+            <div class="page-link-info">
+              <div class="page-link-name">人脸识别库</div>
+              <div class="page-link-desc">人脸数据管理，支持识别、标注、分组</div>
+            </div>
+            <span class="badge blue page-link-badge">核心</span>
+          </a>
+          <a href="05-数据分析.html" class="page-link-card">
+            <div class="page-link-num">05</div>
+            <div class="page-link-info">
+              <div class="page-link-name">数据分析</div>
+              <div class="page-link-desc">数据看板，可视化统计分析和报表</div>
+            </div>
+            <span class="badge blue page-link-badge">核心</span>
+          </a>
+          <a href="20-回收站.html" class="page-link-card">
+            <div class="page-link-num">07</div>
+            <div class="page-link-info">
+              <div class="page-link-name">回收站</div>
+              <div class="page-link-desc">已删除素材管理，支持恢复和彻底删除</div>
+            </div>
+            <span class="badge blue page-link-badge">核心</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ═══ 子页面 ═══ -->
+      <div class="portal-section">
+        <div class="portal-section-header">
+          <div class="portal-section-icon">📄</div>
+          <h2 class="portal-section-title">子页面</h2>
+          <span class="portal-section-count">6 个页面</span>
+        </div>
+        <div class="page-links-grid">
+          <a href="08-分镜详情页.html" class="page-link-card">
+            <div class="page-link-num">08</div>
+            <div class="page-link-info">
+              <div class="page-link-name">分镜详情页</div>
+              <div class="page-link-desc">单个分镜的详细信息，含AI分析、标签、时间线</div>
+            </div>
+            <span class="badge gray page-link-badge">子页</span>
+          </a>
+          <a href="09-素材分镜列表页.html" class="page-link-card">
+            <div class="page-link-num">09</div>
+            <div class="page-link-info">
+              <div class="page-link-name">素材详情页</div>
+              <div class="page-link-desc">素材完整信息，含分镜列表、元数据、操作记录</div>
+            </div>
+            <span class="badge gray page-link-badge">子页</span>
+          </a>
+          <a href="17-人物分镜列表页.html" class="page-link-card">
+            <div class="page-link-num">10</div>
+            <div class="page-link-info">
+              <div class="page-link-name">人脸详情页</div>
+              <div class="page-link-desc">人脸信息管理，关联素材展示</div>
+            </div>
+            <span class="badge gray page-link-badge">子页</span>
+          </a>
+          <a href="11-项目详情页.html" class="page-link-card">
+            <div class="page-link-num">11</div>
+            <div class="page-link-info">
+              <div class="page-link-name">项目详情页</div>
+              <div class="page-link-desc">项目详细信息，含素材列表和分析数据</div>
+            </div>
+            <span class="badge gray page-link-badge">子页</span>
+          </a>
+          <a href="15-设置页面.html" class="page-link-card">
+            <div class="page-link-num">15</div>
+            <div class="page-link-info">
+              <div class="page-link-name">设置页面</div>
+              <div class="page-link-desc">系统设置，含账号、通知、存储等配置</div>
+            </div>
+            <span class="badge gray page-link-badge">子页</span>
+          </a>
+          <a href="16-用户个人信息.html" class="page-link-card">
+            <div class="page-link-num">16</div>
+            <div class="page-link-info">
+              <div class="page-link-name">用户个人信息</div>
+              <div class="page-link-desc">个人资料管理，头像、密码、偏好设置</div>
+            </div>
+            <span class="badge gray page-link-badge">子页</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ═══ 系统级页面 ═══ -->
+      <div class="portal-section">
+        <div class="portal-section-header">
+          <div class="portal-section-icon">🔧</div>
+          <h2 class="portal-section-title">系统级页面</h2>
+          <span class="portal-section-count">2 个页面</span>
+        </div>
+        <div class="page-links-grid">
+          <a href="19-通知中心.html" class="page-link-card">
+            <div class="page-link-num">19</div>
+            <div class="page-link-info">
+              <div class="page-link-name">通知中心</div>
+              <div class="page-link-desc">系统通知列表，含已读/未读状态管理</div>
+            </div>
+            <span class="badge yellow page-link-badge">系统</span>
+          </a>
+          <a href="19-通知中心.html" class="page-link-card">
+            <div class="page-link-num">20</div>
+            <div class="page-link-info">
+              <div class="page-link-name">帮助文档</div>
+              <div class="page-link-desc">使用指南、常见问题、快捷键说明</div>
+            </div>
+            <span class="badge yellow page-link-badge">系统</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ═══ 弹窗组件 ═══ -->
+      <div class="portal-section">
+        <div class="portal-section-header">
+          <div class="portal-section-icon">💬</div>
+          <h2 class="portal-section-title">弹窗组件</h2>
+          <span class="portal-section-count">6 个弹窗</span>
+        </div>
+        <div class="page-links-grid">
+          <a href="07-素材上传弹窗.html" class="page-link-card">
+            <div class="page-link-num">12</div>
+            <div class="page-link-info">
+              <div class="page-link-name">上传素材弹窗</div>
+              <div class="page-link-desc">拖拽上传、批量上传、进度展示</div>
+            </div>
+            <span class="badge red page-link-badge">弹窗</span>
+          </a>
+          <a href="13-项目选择器弹窗.html" class="page-link-card">
+            <div class="page-link-num">13</div>
+            <div class="page-link-info">
+              <div class="page-link-name">项目选择器弹窗</div>
+              <div class="page-link-desc">项目切换选择器，含搜索和最近使用</div>
+            </div>
+            <span class="badge red page-link-badge">弹窗</span>
+          </a>
+          <a href="14-确认弹窗集合.html" class="page-link-card">
+            <div class="page-link-num">14</div>
+            <div class="page-link-info">
+              <div class="page-link-name">确认删除弹窗</div>
+              <div class="page-link-desc">删除确认对话框，含批量删除模式</div>
+            </div>
+            <span class="badge red page-link-badge">弹窗</span>
+          </a>
+          <a href="18-人脸弹窗集合.html" class="page-link-card">
+            <div class="page-link-num">17</div>
+            <div class="page-link-info">
+              <div class="page-link-name">人脸标注弹窗</div>
+              <div class="page-link-desc">人脸识别结果标注，支持手动修正</div>
+            </div>
+            <span class="badge red page-link-badge">弹窗</span>
+          </a>
+          <a href="14-确认弹窗集合.html" class="page-link-card">
+            <div class="page-link-num">18</div>
+            <div class="page-link-info">
+              <div class="page-link-name">批量操作弹窗</div>
+              <div class="page-link-desc">批量移动、标记、导出等操作面板</div>
+            </div>
+            <span class="badge red page-link-badge">弹窗</span>
+          </a>
+          <a href="02-素材库管理.html" class="page-link-card">
+            <div class="page-link-num">21</div>
+            <div class="page-link-info">
+              <div class="page-link-name">AI 分析进度弹窗</div>
+              <div class="page-link-desc">AI处理队列、实时进度展示</div>
+            </div>
+            <span class="badge red page-link-badge">弹窗</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ═══ 交互流程图 ═══ -->
+      <div class="flow-section portal-section">
+        <div class="portal-section-header">
+          <div class="portal-section-icon">🔀</div>
+          <h2 class="portal-section-title">交互流程图</h2>
+          <span class="portal-section-count">核心路径</span>
+        </div>
+        <div class="flow-chart">
+          <!-- Row 1: Entry -->
+          <div class="flow-row">
+            <a href="06-登录.html" class="flow-node primary">06 登录</a>
+            <span class="flow-arrow">→</span>
+            <a href="01-智能搜索.html" class="flow-node primary">01 智能搜索（首页）</a>
+          </div>
+
+          <div class="flow-arrow-down">↓</div>
+
+          <!-- Row 2: Core Modules -->
+          <div class="flow-label">核心模块导航</div>
+          <div class="flow-row">
+            <a href="01-智能搜索.html" class="flow-node">01 智能搜索</a>
+            <a href="02-素材库管理.html" class="flow-node">02 素材库</a>
+            <a href="03-项目管理.html" class="flow-node">03 项目管理</a>
+            <a href="04-人脸识别库.html" class="flow-node">04 人脸识别库</a>
+            <a href="05-数据分析.html" class="flow-node">05 数据分析</a>
+            <a href="20-回收站.html" class="flow-node">07 回收站</a>
+          </div>
+
+          <div class="flow-arrow-down">↓</div>
+
+          <!-- Row 3: Sub pages -->
+          <div class="flow-label">详情 / 子页面</div>
+          <div class="flow-row">
+            <a href="08-分镜详情页.html" class="flow-node">08 分镜详情</a>
+            <span class="flow-arrow">←</span>
+            <a href="09-素材分镜列表页.html" class="flow-node">09 素材详情</a>
+            <span class="flow-arrow">→</span>
+            <a href="17-人物分镜列表页.html" class="flow-node">10 人脸详情</a>
+          </div>
+
+          <div class="flow-row" style="margin-top: 8px;">
+            <a href="11-项目详情页.html" class="flow-node">11 项目详情</a>
+            <a href="15-设置页面.html" class="flow-node">15 设置</a>
+            <a href="16-用户个人信息.html" class="flow-node">16 个人信息</a>
+          </div>
+
+          <div class="flow-arrow-down">↕</div>
+
+          <!-- Row 4: Modals -->
+          <div class="flow-label">弹窗（可从多处触发）</div>
+          <div class="flow-row">
+            <a href="07-素材上传弹窗.html" class="flow-node modal">12 上传素材</a>
+            <a href="13-项目选择器弹窗.html" class="flow-node modal">13 项目选择器</a>
+            <a href="14-确认弹窗集合.html" class="flow-node modal">14 确认删除</a>
+            <a href="18-人脸弹窗集合.html" class="flow-node modal">17 人脸标注</a>
+            <a href="14-确认弹窗集合.html" class="flow-node modal">18 批量操作</a>
+            <a href="02-素材库管理.html" class="flow-node modal">21 AI进度</a>
+          </div>
+
+          <!-- Row 5: System -->
+          <div class="flow-row" style="margin-top: 8px;">
+            <a href="19-通知中心.html" class="flow-node">19 通知中心</a>
+            <a href="19-通知中心.html" class="flow-node">20 帮助文档</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Changelog ═══ -->
+      <div class="changelog">
+        <div class="changelog-header">
+          <h3 class="changelog-title">更新日志</h3>
+          <span class="changelog-ver">v1.1</span>
+          <span class="changelog-date">2026-02-07</span>
+        </div>
+        <div class="changelog-list">
+          <div class="changelog-item">
+            <span class="cl-type new">新增</span>
+            <span>新增 AI 分析进度弹窗（21），实时展示 AI 处理队列状态</span>
+          </div>
+          <div class="changelog-item">
+            <span class="cl-type new">新增</span>
+            <span>智能搜索页增加工作区引导面板，展示近期项目和待办事项</span>
+          </div>
+          <div class="changelog-item">
+            <span class="cl-type improve">优化</span>
+            <span>搜索框升级为动态渐变边框动画，提升视觉反馈体验</span>
+          </div>
+          <div class="changelog-item">
+            <span class="cl-type improve">优化</span>
+            <span>统一全局赛博幻紫主题色系，增强深色模式沉浸感</span>
+          </div>
+          <div class="changelog-item">
+            <span class="cl-type fix">修复</span>
+            <span>修复侧边栏在窄屏下的折叠显示问题</span>
+          </div>
+          <div class="changelog-item">
+            <span class="cl-type fix">修复</span>
+            <span>修复分镜卡片在 Safari 下的渲染兼容性</span>
+          </div>
+          <div class="changelog-item">
+            <span class="cl-type improve">优化</span>
+            <span>导航中心增加交互流程图，清晰展示页面关系</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Footer ═══ -->
+      <div class="portal-footer">
+        <p>© 2026 智能素材管理系统 · 赛博幻紫主题 · 原型设计稿 v1.1</p>
+        <p style="margin-top: 6px;">由 <a href="#">大魔王</a> 团队设计</p>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

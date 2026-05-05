@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>添加人物 - 人脸弹窗</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: transparent;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: rgba(15, 15, 25, 0.98);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-card);
+      width: 100%;
+      max-width: 520px;
+      padding: 28px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(139, 92, 246, 0.08);
+    }
+
+    .modal-card .m-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .modal-card .m-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-heading);
+    }
+
+    .modal-card .m-close {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-small);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .modal-card .m-close:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-heading);
+    }
+
+    .modal-card .m-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 24px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-normal);
+    }
+
+    /* Photo upload circle */
+    .photo-upload {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 2px dashed rgba(139, 92, 246, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      background: rgba(139, 92, 246, 0.05);
+    }
+
+    .photo-upload:hover {
+      border-color: var(--purple);
+      background: rgba(139, 92, 246, 0.1);
+    }
+
+    .photo-upload svg {
+      width: 28px;
+      height: 28px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .photo-upload span {
+      font-size: 10px;
+      color: var(--text-dim-alt);
+    }
+
+    /* Radio group */
+    .radio-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .radio-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: var(--radius-small);
+      background: rgba(15, 15, 25, 0.6);
+      border: 1px solid var(--border-normal);
+      font-size: 13px;
+      color: var(--text-body);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .radio-item:hover {
+      border-color: var(--border-accent);
+    }
+
+    .radio-item.active {
+      border-color: var(--purple);
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--text-active);
+    }
+
+    .r-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .radio-item.active .r-dot {
+      border-color: var(--purple);
+    }
+
+    .r-fill {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--purple);
+      opacity: 0;
+    }
+
+    .radio-item.active .r-fill {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="modal-card">
+    <div class="m-header">
+      <h2 class="m-title">添加人物</h2>
+      <button class="m-close" onclick="window.parent.postMessage('closeModal', '*')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="photo-upload">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+        <circle cx="12" cy="13" r="4"/>
+      </svg>
+      <span>上传照片</span>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">姓名</label>
+      <input type="text" class="form-input" placeholder="请输入人物姓名">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">分类</label>
+      <div class="radio-group">
+        <label class="radio-item active">
+          <span class="r-dot"><span class="r-fill"></span></span>
+          模特
+        </label>
+        <label class="radio-item">
+          <span class="r-dot"><span class="r-fill"></span></span>
+          演员
+        </label>
+        <label class="radio-item">
+          <span class="r-dot"><span class="r-fill"></span></span>
+          工作人员
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">备注</label>
+      <textarea class="form-textarea" placeholder="可选：关于此人物的额外说明…" style="min-height:70px;"></textarea>
+    </div>
+
+    <div class="m-footer">
+      <button class="btn-secondary" onclick="window.parent.postMessage('closeModal', '*')">取消</button>
+      <button class="btn-primary" onclick="window.parent.postMessage('closeModal', '*')">添加</button>
+    </div>
+  </div>
+
+</body>
+</html>

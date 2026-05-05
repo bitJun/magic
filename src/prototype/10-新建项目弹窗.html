@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新建项目弹窗</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    .modal .modal-inner {
+      max-width: 550px;
+      width: 92%;
+    }
+
+    .form-hint {
+      font-size: 11px;
+      color: var(--text-dim-alt);
+      margin-top: 4px;
+    }
+
+    .modal-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-left: 8px;
+      font-weight: 400;
+    }
+
+    /* Color swatches */
+    .color-swatches {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .color-swatch {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all var(--transition-fast);
+      position: relative;
+    }
+
+    .color-swatch:hover {
+      transform: scale(1.1);
+    }
+
+    .color-swatch.selected {
+      border-color: var(--text-heading);
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+    }
+
+    /* Radio group */
+    .radio-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .radio-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: var(--radius-small);
+      background: rgba(15, 15, 25, 0.6);
+      border: 1px solid var(--border-normal);
+      font-size: 13px;
+      color: var(--text-body);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .radio-item:hover {
+      border-color: var(--border-accent);
+    }
+
+    .radio-item.active {
+      border-color: var(--purple);
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--text-active);
+    }
+
+    .radio-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all var(--transition-fast);
+    }
+
+    .radio-item.active .radio-dot {
+      border-color: var(--purple);
+    }
+
+    .radio-dot-inner {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+
+    .radio-item.active .radio-dot-inner {
+      opacity: 1;
+    }
+
+    .required {
+      color: #f87171;
+    }
+  </style>
+</head>
+<body>
+  <div class="modal">
+    <div class="modal-inner">
+      <!-- Header -->
+      <div class="modal-header">
+        <h2 class="modal-title">新建项目 <span class="modal-hint">(编辑时显示"编辑项目")</span></h2>
+        <button class="modal-close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Form Body -->
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">项目名称 <span class="required">*</span></label>
+          <input type="text" class="form-input" placeholder="如：护肤品A系列" value="护肤品B系列">
+          <div class="form-hint">50字以内，不可重复</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">项目描述</label>
+          <textarea class="form-textarea" placeholder="如：2026年春季护肤品系列推广">2026年春季护肤品系列广告素材管理项目，包含产品展示和使用效果的视频素材。</textarea>
+          <div class="form-hint">200字以内</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">项目标识色</label>
+          <div class="color-swatches">
+            <div class="color-swatch selected" style="background: #8b5cf6;"></div>
+            <div class="color-swatch" style="background: #ec4899;"></div>
+            <div class="color-swatch" style="background: #3b82f6;"></div>
+            <div class="color-swatch" style="background: #10b981;"></div>
+            <div class="color-swatch" style="background: #f59e0b;"></div>
+            <div class="color-swatch" style="background: #ef4444;"></div>
+            <div class="color-swatch" style="background: #06b6d4;"></div>
+            <div class="color-swatch" style="background: #f97316;"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">项目负责人</label>
+          <select class="form-select">
+            <option value="">选择成员...</option>
+            <option selected>张三（管理员）</option>
+            <option>李四（剪辑师）</option>
+            <option>王五（投放运营）</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">项目状态 <span class="required">*</span></label>
+          <div class="radio-group">
+            <label class="radio-item active">
+              <span class="radio-dot"><span class="radio-dot-inner"></span></span>
+              🟢 进行中
+            </label>
+            <label class="radio-item">
+              <span class="radio-dot"><span class="radio-dot-inner"></span></span>
+              🔵 已完成
+            </label>
+            <label class="radio-item">
+              <span class="radio-dot"><span class="radio-dot-inner"></span></span>
+              🟡 已归档
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button class="btn-secondary">取消</button>
+        <button class="btn-primary">创建项目</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

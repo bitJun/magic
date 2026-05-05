@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>分镜详情 - 智能素材管理系统</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">✦</div>
+      <div class="logo-text">
+        <span class="brand">大魔王</span>
+        <span class="subtitle">智能素材管理</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">主菜单</div>
+        <a href="01-智能搜索.html" class="nav-item">
+          <span class="nav-icon">🔍</span> 智能搜索
+        </a>
+        <a href="02-素材库管理.html" class="nav-item">
+          <span class="nav-icon">📁</span> 素材库
+        </a>
+        <a href="03-项目管理.html" class="nav-item">
+          <span class="nav-icon">📂</span> 项目管理
+        </a>
+        <a href="04-人脸识别库.html" class="nav-item">
+          <span class="nav-icon">👤</span> 人脸库
+        </a>
+        <a href="05-数据分析.html" class="nav-item">
+          <span class="nav-icon">📊</span> 数据分析
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">系统</div>
+        <a href="15-设置页面.html" class="nav-item">
+          <span class="nav-icon">⚙️</span> 设置
+        </a>
+        <a href="20-回收站.html" class="nav-item">
+          <span class="nav-icon">🗑️</span> 回收站
+        </a>
+      </div>
+    </nav>
+    <a href="16-用户个人信息.html" class="sidebar-user">
+      <div class="user-avatar">张</div>
+      <div class="user-info">
+        <div class="user-name">张三</div>
+        <div class="user-role">管理员</div>
+      </div>
+    </a>
+  </aside>
+
+  <!-- ===== Main Content ===== -->
+  <main class="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <div class="breadcrumb">
+          <a href="01-智能搜索.html">智能搜索</a>
+          <span class="sep">›</span>
+          <span class="current">分镜详情</span>
+        </div>
+        <h1 class="page-title">分镜详情</h1>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-outline">⭐ 收藏</button>
+        <button class="btn btn-primary">⬇ 下载</button>
+      </div>
+    </div>
+
+    <div class="content-area">
+      <!-- ===== Top: Video + Info ===== -->
+      <div class="two-col" style="margin-bottom: 20px;">
+        <!-- LEFT: Video Player -->
+        <div class="col-main">
+          <div class="video-player">
+            <!-- SVG Placeholder Background -->
+            <svg width="100%" height="100%" viewBox="0 0 640 350" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;opacity:0.08;">
+              <rect width="640" height="350" fill="url(#vg1)"/>
+              <defs><linearGradient id="vg1" x1="0" y1="0" x2="640" y2="350"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+              <line x1="0" y1="0" x2="640" y2="350" stroke="#8b5cf6" stroke-width="0.5" opacity="0.3"/>
+              <line x1="640" y1="0" x2="0" y2="350" stroke="#ec4899" stroke-width="0.5" opacity="0.3"/>
+              <circle cx="320" cy="175" r="60" stroke="#8b5cf6" stroke-width="0.5" fill="none" opacity="0.2"/>
+            </svg>
+            <!-- Play Button -->
+            <div class="play-circle" title="全屏播放" onclick="openModal('videoPreviewModal')" style="cursor:pointer;">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><polygon points="5,3 19,12 5,21" fill="white"/></svg>
+            </div>
+            <!-- Video Controls -->
+            <div class="video-controls">
+              <div class="video-progress">
+                <div class="video-progress-fill"></div>
+              </div>
+              <div class="controls-bar">
+                <div class="c-left">
+                  <button class="c-btn">⏮</button>
+                  <button class="c-btn" style="font-size:18px;">▶</button>
+                  <button class="c-btn">⏭</button>
+                  <span class="time-text">00:00 / 00:05</span>
+                </div>
+                <div class="c-right">
+                  <button class="c-btn">🔊</button>
+                  <button class="c-btn">1x</button>
+                  <button class="c-btn">⛶</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Info Card -->
+        <div class="col-side" style="width: 350px;">
+          <div class="detail-card" style="height: 100%;">
+            <div class="detail-card-title">基本信息</div>
+            <table class="detail-table">
+              <tr>
+                <td>所属素材</td>
+                <td><a href="09-素材分镜列表页.html">护肤品_涂抹质地_01.mp4</a></td>
+              </tr>
+              <tr>
+                <td>所属项目</td>
+                <td><a href="11-项目详情页.html">护肤品A系列</a></td>
+              </tr>
+              <tr>
+                <td>时长</td>
+                <td>5秒</td>
+              </tr>
+              <tr>
+                <td>分辨率</td>
+                <td>1920×1080</td>
+              </tr>
+              <tr>
+                <td>帧率</td>
+                <td>30fps</td>
+              </tr>
+              <tr>
+                <td>时间段</td>
+                <td>00:12 - 00:17</td>
+              </tr>
+              <tr>
+                <td>上传时间</td>
+                <td>2026-02-05 14:30</td>
+              </tr>
+              <tr>
+                <td>上传者</td>
+                <td>张三</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Middle: AI Analysis + Side Cards ===== -->
+      <div class="two-col" style="margin-bottom: 20px;">
+        <!-- LEFT: AI Analysis -->
+        <div class="col-main">
+          <div class="detail-card">
+            <div class="detail-card-title">🤖 AI内容分析</div>
+
+            <div class="analysis-item">
+              <div class="analysis-label">内容描述</div>
+              <div class="analysis-value">
+                女生照镜子哭泣，表情痛苦，室内场景。镜头为近景特写，可见面部表情变化，适合用于短视频痛点开头。
+              </div>
+            </div>
+
+            <div class="analysis-item">
+              <div class="analysis-label">场景识别</div>
+              <div class="analysis-value">室内 - 卧室</div>
+            </div>
+
+            <div class="analysis-item">
+              <div class="analysis-label">动作识别</div>
+              <div class="analysis-value">照镜子、哭泣</div>
+            </div>
+
+            <div class="analysis-item">
+              <div class="analysis-label">物体识别</div>
+              <div class="analysis-value">镜子、化妆台</div>
+            </div>
+
+            <div class="analysis-item" style="position:relative;">
+              <div class="analysis-label">标签</div>
+              <div class="tag-pills" data-shot-id="3">
+                <span class="tag-pill ai">#痛点</span>
+                <span class="tag-pill ai">#哭泣</span>
+                <span class="tag-pill ai">#镜子</span>
+                <span class="tag-pill ai">#近景</span>
+                <span class="tag-pill ai">#室内</span>
+                <span class="tag-pill ai">#护肤</span>
+                <span class="tag-pill-add" onclick="openDetailTagEditor(3)">+ 标签</span>
+              </div>
+
+              <div class="tag-editor" id="detailTagEditor-3" style="position:relative;margin-top:10px;">
+                <div class="te-title">
+                  <span>编辑标签</span>
+                  <span class="shot-tag" style="padding:2px 6px;" onclick="closeDetailTagEditor(3)">关闭</span>
+                </div>
+                <input type="text" placeholder="输入标签回车添加（如：痛点/开箱/对比）" onkeydown="handleDetailTagInputKey(event, 3)" />
+                <div class="tag-suggest" data-shot-id="3"></div>
+                <div class="te-actions">
+                  <button class="btn btn-outline btn-xs" onclick="closeDetailTagEditor(3)">取消</button>
+                  <button class="btn btn-primary btn-xs" onclick="closeDetailTagEditor(3)">完成</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Person + Download Stats -->
+        <div class="col-side" style="width: 300px;">
+          <!-- Person Card -->
+          <div class="detail-card" style="margin-bottom: 16px;">
+            <div class="detail-card-title">识别人物</div>
+            <div class="person-mini">
+              <div class="p-avatar">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px;">
+                  <circle cx="12" cy="8" r="4" fill="white" opacity="0.7"/>
+                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" fill="white" opacity="0.5"/>
+                </svg>
+              </div>
+              <div>
+                <div class="p-name">模特小王</div>
+                <span class="badge badge-blue" style="margin-top:4px;">模特</span>
+              </div>
+            </div>
+            <div class="confidence-row">
+              <span style="font-size:12px;color:var(--text-muted);">置信度</span>
+              <div class="conf-track">
+                <div class="conf-fill" style="width:98.5%;"></div>
+              </div>
+              <span class="conf-value">98.5%</span>
+            </div>
+          </div>
+
+          <!-- Download Stats -->
+          <div class="detail-card">
+            <div class="detail-card-title">📊 下载统计</div>
+            <div class="stat-row">
+              <span class="sr-label">下载次数</span>
+              <span class="sr-value">23</span>
+            </div>
+            <div class="stat-row">
+              <span class="sr-label">收藏人数</span>
+              <span class="sr-value">5</span>
+            </div>
+            <div class="stat-row">
+              <span class="sr-label">所属项目</span>
+              <span class="sr-value"><a href="11-项目详情页.html" class="link">护肤品A系列</a></span>
+            </div>
+            <div class="stat-row">
+              <span class="sr-label">最近下载</span>
+              <span class="sr-value">2小时前</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Bottom: Download Records ===== -->
+      <div class="section-title">📋 下载记录</div>
+      <div class="data-table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>使用人</th>
+              <th>操作</th>
+              <th style="text-align:right;">时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="flex items-center gap-8">
+                  <div class="uploader-avatar">李</div>
+                  <span>李四</span>
+                </div>
+              </td>
+              <td><span class="badge badge-green">下载</span></td>
+              <td style="text-align:right;color:var(--text-muted);">2026-02-07 10:20</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="flex items-center gap-8">
+                  <div class="uploader-avatar">王</div>
+                  <span>王五</span>
+                </div>
+              </td>
+              <td><span class="badge badge-blue">收藏</span></td>
+              <td style="text-align:right;color:var(--text-muted);">2026-02-06 18:45</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="flex items-center gap-8">
+                  <div class="uploader-avatar">赵</div>
+                  <span>赵六</span>
+                </div>
+              </td>
+              <td><span class="badge badge-green">下载</span></td>
+              <td style="text-align:right;color:var(--text-muted);">2026-02-06 14:10</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="flex items-center gap-8">
+                  <div class="uploader-avatar">陈</div>
+                  <span>陈七</span>
+                </div>
+              </td>
+              <td><span class="badge badge-green">下载</span></td>
+              <td style="text-align:right;color:var(--text-muted);">2026-02-05 09:30</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ===== Video Preview Modal ===== -->
+<div class="modal-overlay" id="videoPreviewModal">
+  <div class="modal" style="max-width:900px;width:94%;padding:0;overflow:hidden;">
+    <div class="modal-header" style="padding:20px 24px;margin-bottom:0;border-bottom:1px solid var(--border-color);">
+      <h2 class="modal-title" style="font-size:15px;font-weight:600;">视频预览 - 护肤品_涂抹质地_01.mp4</h2>
+      <button class="modal-close" onclick="closeModal('videoPreviewModal')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div style="position:relative;width:100%;height:450px;background:#050508;display:flex;align-items:center;justify-content:center;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+        <div style="width:72px;height:72px;border-radius:50%;background:rgba(139,92,246,0.2);border:2px solid rgba(139,92,246,0.4);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:32px;height:32px;color:#fff;margin-left:3px;"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+        </div>
+        <span style="font-size:13px;color:var(--text-dim-alt);">点击播放视频预览</span>
+      </div>
+
+      <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.85));padding:24px 20px 14px;">
+        <div style="width:100%;height:4px;background:rgba(255,255,255,0.12);border-radius:2px;margin-bottom:12px;position:relative;">
+          <div style="position:absolute;left:0;top:0;height:100%;width:35%;background:var(--gradient-primary);border-radius:2px;"></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:14px;">
+            <span style="font-size:18px;color:rgba(255,255,255,0.7);cursor:pointer;">⏮</span>
+            <span style="font-size:22px;color:rgba(255,255,255,0.7);cursor:pointer;">▶</span>
+            <span style="font-size:18px;color:rgba(255,255,255,0.7);cursor:pointer;">⏭</span>
+            <span style="font-size:12px;color:rgba(255,255,255,0.6);font-variant-numeric:tabular-nums;">01:12 / 03:28</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="font-size:16px;color:rgba(255,255,255,0.7);cursor:pointer;">🔊</span>
+            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);cursor:pointer;">1.0x</span>
+            <span style="font-size:16px;color:rgba(255,255,255,0.7);cursor:pointer;">⛶</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px 20px;border-top:1px solid var(--border-color);">
+      <div>
+        <div style="font-size:14px;font-weight:600;color:var(--text-heading);">护肤品_涂抹质地_01.mp4</div>
+        <div style="font-size:12px;color:var(--text-muted);display:flex;gap:12px;margin-top:4px;">
+          <span>2026-01-15</span>
+          <span>128.5 MB</span>
+          <span>1920×1080</span>
+          <span>03:28</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-small);font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border-color);color:var(--text-body);background:transparent;">⭐ 收藏</button>
+        <button style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-small);font-size:13px;font-weight:600;cursor:pointer;background:var(--gradient-primary);color:#fff;border:none;box-shadow:0 4px 16px rgba(139,92,246,0.25);">⬇ 下载</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.modal-overlay').forEach(function(el) {
+  el.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
+});
+
+// 项目内标签库（demo静态数据）
+const PROJECT_TAG_LIBRARY = [
+  '#产品', '#展示', '#特写', '#涂抹', '#质地', '#手部', '#痛点', '#哭泣', '#镜子', '#室内', '#对比', '#效果', '#分屏',
+  '#开箱', '#UGC', '#氛围', '#晨间', '#温馨', '#引导', '#手势', '#下单', '#近景', '#护肤'
+];
+
+function normalizeTag(text) {
+  if (!text) return '';
+  let t = text.trim();
+  if (!t) return '';
+  if (!t.startsWith('#')) t = '#' + t;
+  return t;
+}
+
+function openDetailTagEditor(shotId) {
+  const editor = document.getElementById('detailTagEditor-' + shotId);
+  if (!editor) return;
+  editor.classList.add('open');
+  renderDetailSuggestions(shotId);
+  const input = editor.querySelector('input');
+  if (input) input.focus();
+}
+
+function closeDetailTagEditor(shotId) {
+  const editor = document.getElementById('detailTagEditor-' + shotId);
+  if (!editor) return;
+  editor.classList.remove('open');
+}
+
+function addTagToDetailShot(shotId, tagText, source) {
+  const tag = normalizeTag(tagText);
+  if (!tag) return;
+
+  const wrap = document.querySelector('.tag-pills[data-shot-id="' + shotId + '"]');
+  if (!wrap) return;
+
+  const existing = Array.from(wrap.querySelectorAll('.tag-pill')).some(el => el.textContent.trim().replace('×','').trim() === tag);
+  if (existing) return;
+
+  const addBtn = wrap.querySelector('.tag-pill-add');
+  const el = document.createElement('span');
+  el.className = 'tag-pill' + (source === 'ai' ? ' ai' : '');
+  el.textContent = tag;
+
+  if (source !== 'ai') {
+    const rm = document.createElement('span');
+    rm.className = 'tag-remove';
+    rm.textContent = '×';
+    el.appendChild(rm);
+    el.title = '点击删除';
+    el.onclick = function() { el.remove(); };
+  }
+
+  if (addBtn) wrap.insertBefore(el, addBtn);
+  else wrap.appendChild(el);
+}
+
+function handleDetailTagInputKey(e, shotId) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const tag = normalizeTag(e.target.value);
+    if (!tag) return;
+
+    addTagToDetailShot(shotId, tag, 'manual');
+    if (!PROJECT_TAG_LIBRARY.includes(tag)) PROJECT_TAG_LIBRARY.unshift(tag);
+
+    e.target.value = '';
+    renderDetailSuggestions(shotId);
+  }
+}
+
+function renderDetailSuggestions(shotId) {
+  const editor = document.getElementById('detailTagEditor-' + shotId);
+  if (!editor) return;
+  const sg = editor.querySelector('.tag-suggest');
+  const input = editor.querySelector('input');
+  if (!sg || !input) return;
+
+  const kw = input.value.trim();
+  const wrap = document.querySelector('.tag-pills[data-shot-id="' + shotId + '"]');
+  const existing = wrap ? Array.from(wrap.querySelectorAll('.tag-pill')).map(el => el.textContent.trim().replace('×','').trim()) : [];
+
+  const candidates = PROJECT_TAG_LIBRARY
+    .filter(t => !existing.includes(t))
+    .filter(t => !kw || t.includes(kw) || t.replace('#','').includes(kw))
+    .slice(0, 10);
+
+  sg.innerHTML = '';
+  candidates.forEach(t => {
+    const el = document.createElement('span');
+    el.className = 'sg';
+    el.textContent = t;
+    el.onclick = function() {
+      addTagToDetailShot(shotId, t, 'manual');
+      renderDetailSuggestions(shotId);
+    };
+    sg.appendChild(el);
+  });
+
+  input.oninput = function() { renderDetailSuggestions(shotId); };
+}
+</script>
+</body>
+</html>

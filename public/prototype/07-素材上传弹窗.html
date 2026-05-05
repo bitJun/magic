@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>素材上传弹窗</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    .modal {
+      max-width: 700px;
+      width: 92%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 0;
+    }
+
+    .modal-inner {
+      padding: 28px;
+    }
+
+    /* Project selection */
+    .project-select-section {
+      margin-bottom: 20px;
+    }
+
+    .project-select-section .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-heading);
+      margin-bottom: 10px;
+    }
+
+    .project-checkboxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .project-check-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius-small);
+      background: rgba(15, 15, 25, 0.6);
+      border: 1px solid var(--border-normal);
+      font-size: 13px;
+      color: var(--text-body);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .project-check-item:hover {
+      border-color: var(--border-accent);
+    }
+
+    .project-check-item.checked {
+      border-color: var(--purple);
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--text-active);
+    }
+
+    .checkbox-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1.5px solid var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all var(--transition-fast);
+    }
+
+    .project-check-item.checked .checkbox-icon {
+      background: var(--gradient-primary);
+      border-color: transparent;
+    }
+
+    .project-check-item.checked .checkbox-icon svg {
+      display: block;
+    }
+
+    .checkbox-icon svg {
+      display: none;
+      width: 10px;
+      height: 10px;
+    }
+
+    .project-links {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .create-link {
+      font-size: 12px;
+      color: var(--text-tag);
+      cursor: pointer;
+      transition: color var(--transition-fast);
+    }
+
+    .create-link:hover {
+      color: #c4b5fd;
+    }
+
+    .hint-text {
+      font-size: 11px;
+      color: var(--text-dim-alt);
+    }
+
+    /* Upload area */
+    .upload-area {
+      border: 2px dashed rgba(139, 92, 246, 0.25);
+      border-radius: var(--radius-card);
+      padding: 36px 24px;
+      text-align: center;
+      margin-bottom: 20px;
+      background: rgba(139, 92, 246, 0.03);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .upload-area:hover {
+      border-color: rgba(139, 92, 246, 0.45);
+      background: rgba(139, 92, 246, 0.06);
+    }
+
+    .upload-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 14px;
+      border-radius: 50%;
+      background: rgba(139, 92, 246, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .upload-icon svg {
+      width: 28px;
+      height: 28px;
+      color: var(--text-tag);
+    }
+
+    .upload-text {
+      font-size: 14px;
+      color: var(--text-body-alt);
+      margin-bottom: 14px;
+    }
+
+    .upload-btns {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .upload-btn {
+      padding: 7px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: var(--radius-small);
+      border: 1px solid var(--border-accent);
+      background: rgba(139, 92, 246, 0.08);
+      color: var(--text-active);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .upload-btn:hover {
+      background: rgba(139, 92, 246, 0.15);
+      border-color: var(--purple);
+    }
+
+    /* Folder option */
+    .folder-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      font-size: 13px;
+      color: var(--text-body-alt);
+      cursor: pointer;
+    }
+
+    /* File list */
+    .file-list {
+      margin-bottom: 20px;
+    }
+
+    .file-list-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-heading);
+      margin-bottom: 10px;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-small);
+      background: rgba(15, 15, 25, 0.5);
+      border: 1px solid var(--border-normal);
+      margin-bottom: 8px;
+      transition: border-color var(--transition-fast);
+    }
+
+    .file-item:hover {
+      border-color: var(--border-accent);
+    }
+
+    .file-thumb {
+      width: 44px;
+      height: 34px;
+      border-radius: 6px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--gradient-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .file-thumb svg {
+      width: 18px;
+      height: 18px;
+      color: #fff;
+      opacity: 0.5;
+    }
+
+    .file-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .file-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-heading);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-size {
+      font-size: 11px;
+      color: var(--text-dim-alt);
+      margin-top: 2px;
+    }
+
+    .file-status {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-ready {
+      font-size: 12px;
+      font-weight: 600;
+      color: #34d399;
+      padding: 2px 10px;
+      border-radius: 6px;
+      background: rgba(52, 211, 153, 0.1);
+    }
+
+    .status-uploading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 120px;
+    }
+
+    .status-uploading .progress-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .status-uploading .percent {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-tag);
+    }
+
+    .upload-progress {
+      width: 80px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .upload-progress .fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      border-radius: 3px;
+    }
+
+    .file-remove {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dim-alt);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .file-remove:hover {
+      background: rgba(248, 113, 113, 0.12);
+      color: #f87171;
+    }
+
+    /* Upload options */
+    .upload-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 4px;
+      padding: 14px 16px;
+      background: rgba(15, 15, 25, 0.4);
+      border-radius: var(--radius-small);
+      border: 1px solid var(--border-normal);
+    }
+
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-body-alt);
+      cursor: pointer;
+    }
+
+    .option-item.checked {
+      color: var(--text-active);
+    }
+  </style>
+</head>
+<body>
+  <div class="modal">
+    <div class="modal-inner">
+      <!-- Header -->
+      <div class="modal-header">
+        <h2 class="modal-title">上传素材</h2>
+        <button class="modal-close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Project Selection -->
+      <div class="project-select-section">
+        <div class="section-title">选择所属项目（可多选）</div>
+        <div class="project-checkboxes">
+          <label class="project-check-item checked">
+            <span class="checkbox-icon">
+              <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l3 3 5-5"/></svg>
+            </span>
+            护肤品A系列
+          </label>
+          <label class="project-check-item">
+            <span class="checkbox-icon">
+              <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l3 3 5-5"/></svg>
+            </span>
+            口红系列
+          </label>
+          <label class="project-check-item">
+            <span class="checkbox-icon">
+              <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l3 3 5-5"/></svg>
+            </span>
+            眼影系列
+          </label>
+          <label class="project-check-item">
+            <span class="checkbox-icon">
+              <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l3 3 5-5"/></svg>
+            </span>
+            面膜系列
+          </label>
+        </div>
+        <div class="project-links">
+          <span class="create-link" onclick="openModal('newProjectModal')">+ 快速创建新项目</span>
+          <span class="hint-text">不选择任何项目将自动归入「未分类」</span>
+        </div>
+      </div>
+
+      <!-- Upload Area -->
+      <div class="upload-area">
+        <div class="upload-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-5l-2-2H5a2 2 0 00-2 2z"/>
+            <path d="M12 11v6M9 14l3-3 3 3"/>
+          </svg>
+        </div>
+        <div class="upload-text">拖拽文件或文件夹到这里上传</div>
+        <div class="upload-btns">
+          <button class="upload-btn">选择文件</button>
+          <button class="upload-btn">选择文件夹</button>
+        </div>
+      </div>
+
+      <!-- Folder option -->
+      <label class="folder-option">
+        <span class="checkbox-icon">
+          <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l3 3 5-5"/></svg>
+        </span>
+        按文件夹结构自动创建子项目
+      </label>
+
+      <!-- File List -->
+      <div class="file-list">
+        <div class="file-list-title">已选文件（3个）</div>
+
+        <!-- File 1: ready -->
+        <div class="file-item">
+          <div class="file-thumb">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="3"/><circle cx="8" cy="8" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+          </div>
+          <div class="file-info">
+            <div class="file-name">护肤品_涂抹质地_01.mp4</div>
+            <div class="file-size">MP4 · 128.5 MB · 1920×1080</div>
+          </div>
+          <div class="file-status">
+            <span class="status-ready">就绪</span>
+          </div>
+          <button class="file-remove">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- File 2: uploading 45% -->
+        <div class="file-item">
+          <div class="file-thumb">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          </div>
+          <div class="file-info">
+            <div class="file-name">口红色号对比_广告素材.mov</div>
+            <div class="file-size">MOV · 256.8 MB · 3840×2160</div>
+          </div>
+          <div class="file-status">
+            <div class="status-uploading">
+              <div class="progress-wrapper">
+                <span class="percent">上传中 45%</span>
+                <div class="upload-progress"><div class="fill" style="width: 45%"></div></div>
+              </div>
+            </div>
+          </div>
+          <button class="file-remove">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- File 3: ready -->
+        <div class="file-item">
+          <div class="file-thumb">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="3"/><circle cx="8" cy="8" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+          </div>
+          <div class="file-info">
+            <div class="file-name">眼影盘_特写_慢镜头.mp4</div>
+            <div class="file-size">MP4 · 89.2 MB · 1920×1080</div>
+          </div>
+          <div class="file-status">
+            <span class="status-ready">就绪</span>
+          </div>
+          <button class="file-remove">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Upload Options -->
+      <div class="upload-options">
+        <label class="option-item checked">
+          <span class="checkbox-icon" style="background: var(--gradient-primary); border-color: transparent;">
+            <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block"><path d="M2 6l3 3 5-5"/></svg>
+          </span>
+          自动AI分析
+        </label>
+        <label class="option-item checked">
+          <span class="checkbox-icon" style="background: var(--gradient-primary); border-color: transparent;">
+            <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block"><path d="M2 6l3 3 5-5"/></svg>
+          </span>
+          自动分镜
+        </label>
+        <label class="option-item">
+          <span class="checkbox-icon">
+            <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l3 3 5-5"/></svg>
+          </span>
+          完成通知
+        </label>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button class="btn-secondary">取消</button>
+        <button class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          开始上传
+        </button>
+      </div>
+    </div>
+  </div>
+<!-- ===== New Project Modal (nested) ===== -->
+<div class="modal-overlay" id="newProjectModal">
+  <div class="modal" style="max-width:550px;width:92%;padding:0;">
+    <div class="modal-inner" style="padding:28px;">
+      <div class="modal-header">
+        <h2 class="modal-title">新建项目</h2>
+        <button class="modal-close" onclick="closeModal('newProjectModal')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">项目名称 <span style="color:#f87171;">*</span></label>
+          <input type="text" class="form-input" placeholder="如：护肤品A系列">
+          <div style="font-size:11px;color:var(--text-dim-alt);margin-top:4px;">50字以内，不可重复</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">项目描述</label>
+          <textarea class="form-textarea" placeholder="如：2026年春季护肤品系列推广"></textarea>
+          <div style="font-size:11px;color:var(--text-dim-alt);margin-top:4px;">200字以内</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">项目负责人</label>
+          <select class="form-select">
+            <option value="">选择成员...</option>
+            <option>张三（管理员）</option>
+            <option>李四（剪辑师）</option>
+            <option>王五（投放运营）</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">项目状态 <span style="color:#f87171;">*</span></label>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <label style="display:flex;align-items:center;gap:8px;padding:8px 18px;border-radius:var(--radius-small);background:rgba(139,92,246,0.1);border:1px solid var(--purple);font-size:13px;color:var(--text-active);cursor:pointer;">🟢 进行中</label>
+            <label style="display:flex;align-items:center;gap:8px;padding:8px 18px;border-radius:var(--radius-small);background:rgba(15,15,25,0.6);border:1px solid var(--border-color);font-size:13px;color:var(--text-body);cursor:pointer;">🔵 已完成</label>
+            <label style="display:flex;align-items:center;gap:8px;padding:8px 18px;border-radius:var(--radius-small);background:rgba(15,15,25,0.6);border:1px solid var(--border-color);font-size:13px;color:var(--text-body);cursor:pointer;">🟡 已归档</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('newProjectModal')">取消</button>
+        <button class="btn-primary">创建项目</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.modal-overlay').forEach(function(el) {
+  el.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
+});
+</script>
+</body>
+</html>

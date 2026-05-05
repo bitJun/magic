@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>视频预览弹窗</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+    }
+
+    .modal {
+      max-width: 900px;
+      width: 94%;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      margin-bottom: 0;
+      border-bottom: 1px solid var(--border-normal);
+    }
+
+    .modal-header .modal-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    /* Video player */
+    .video-player {
+      position: relative;
+      width: 100%;
+      height: 450px;
+      background: #050508;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .video-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .play-circle {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(139, 92, 246, 0.2);
+      border: 2px solid rgba(139, 92, 246, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      backdrop-filter: blur(10px);
+    }
+
+    .play-circle:hover {
+      background: rgba(139, 92, 246, 0.35);
+      border-color: var(--purple);
+      transform: scale(1.08);
+    }
+
+    .play-circle svg {
+      width: 32px;
+      height: 32px;
+      color: #fff;
+      margin-left: 3px;
+    }
+
+    .video-label {
+      font-size: 13px;
+      color: var(--text-dim-alt);
+    }
+
+    /* Video watermark pattern */
+    .video-player::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 30% 40%, rgba(139, 92, 246, 0.05) 0%, transparent 60%),
+        radial-gradient(circle at 70% 60%, rgba(236, 72, 153, 0.04) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* Control bar */
+    .control-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+      padding: 24px 20px 14px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 2px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .progress-track .progress-played {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 35%;
+      background: var(--gradient-primary);
+      border-radius: 2px;
+    }
+
+    .progress-track .progress-handle {
+      position: absolute;
+      left: 35%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 6px rgba(139, 92, 246, 0.5);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+
+    .progress-track:hover .progress-handle {
+      opacity: 1;
+    }
+
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .controls-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .controls-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ctrl-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all var(--transition-fast);
+    }
+
+    .ctrl-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .ctrl-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .ctrl-btn.play-pause svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .time-display {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      font-variant-numeric: tabular-nums;
+      font-weight: 500;
+    }
+
+    .speed-btn {
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.6);
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .speed-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .volume-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .volume-slider {
+      width: 60px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 2px;
+      position: relative;
+    }
+
+    .volume-slider .volume-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 70%;
+      background: #fff;
+      border-radius: 2px;
+    }
+
+    /* Info bar */
+    .video-info-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px 20px;
+      border-top: 1px solid var(--border-normal);
+    }
+
+    .video-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .video-meta .meta-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-heading);
+    }
+
+    .video-meta .meta-details {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      gap: 12px;
+    }
+
+    .video-meta .meta-details span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .video-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-small);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      border: 1px solid var(--border-normal);
+      color: var(--text-body);
+      background: transparent;
+    }
+
+    .action-btn:hover {
+      border-color: var(--border-accent);
+      color: var(--text-heading);
+      background: rgba(139, 92, 246, 0.06);
+    }
+
+    .action-btn svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .action-btn.primary {
+      background: var(--gradient-primary);
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25);
+    }
+
+    .action-btn.primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <div class="modal">
+    <!-- Header -->
+    <div class="modal-header">
+      <h2 class="modal-title">视频预览 - 护肤品_涂抹质地_01.mp4</h2>
+      <button class="modal-close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Video Player -->
+    <div class="video-player">
+      <div class="video-placeholder">
+        <div class="play-circle">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+        </div>
+        <span class="video-label">点击播放视频预览</span>
+      </div>
+
+      <!-- Control Bar -->
+      <div class="control-bar">
+        <div class="progress-track">
+          <div class="progress-played"></div>
+          <div class="progress-handle"></div>
+        </div>
+        <div class="controls-row">
+          <div class="controls-left">
+            <button class="ctrl-btn play-pause">
+              <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+            </button>
+            <button class="ctrl-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+            </button>
+            <button class="ctrl-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+            </button>
+            <span class="time-display">01:12 / 03:28</span>
+          </div>
+          <div class="controls-right">
+            <div class="volume-group">
+              <button class="ctrl-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>
+              </button>
+              <div class="volume-slider">
+                <div class="volume-fill"></div>
+              </div>
+            </div>
+            <button class="speed-btn">1.0x</button>
+            <button class="ctrl-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info Bar -->
+    <div class="video-info-bar">
+      <div class="video-meta">
+        <div class="meta-title">护肤品_涂抹质地_01.mp4</div>
+        <div class="meta-details">
+          <span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M16 2v4M8 2v4M2 10h20"/></svg>
+            2026-01-15
+          </span>
+          <span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/></svg>
+            128.5 MB
+          </span>
+          <span>1920×1080</span>
+          <span>03:28</span>
+        </div>
+      </div>
+      <div class="video-actions">
+        <a href="08-分镜详情页.html" class="action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          查看详情
+        </a>
+        <button class="action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          收藏
+        </button>
+        <button class="action-btn primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          下载
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

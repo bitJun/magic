@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>通知中心 & 帮助中心</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: var(--bg-body);
+      padding: 40px 20px 80px;
+    }
+
+    .page-title-main {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 800;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+
+    .page-subtitle-main {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 48px;
+    }
+
+    .panels-wrapper {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .panel-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .panel-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-tag);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    /* Notification Panel */
+    .notif-panel {
+      width: 360px;
+      background: rgba(15, 15, 25, 0.98);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-card);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.08);
+      overflow: hidden;
+    }
+
+    .notif-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-normal);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .notif-header .nh-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-heading);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .notif-header .nh-title .notif-count {
+      padding: 1px 7px;
+      border-radius: 10px;
+      background: var(--gradient-primary);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .notif-header .read-all {
+      font-size: 12px;
+      color: var(--text-tag);
+      cursor: pointer;
+      transition: color var(--transition-fast);
+    }
+
+    .notif-header .read-all:hover {
+      color: #c4b5fd;
+    }
+
+    .notif-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .notif-item {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-normal);
+      display: flex;
+      gap: 12px;
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+
+    .notif-item:hover {
+      background: rgba(139, 92, 246, 0.04);
+    }
+
+    .notif-item:last-child {
+      border-bottom: none;
+    }
+
+    .notif-item.unread {
+      background: rgba(251, 191, 36, 0.04);
+    }
+
+    .notif-item.unread:hover {
+      background: rgba(251, 191, 36, 0.08);
+    }
+
+    .notif-icon-wrap {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 16px;
+    }
+
+    .notif-icon-wrap.success {
+      background: rgba(52, 211, 153, 0.12);
+    }
+
+    .notif-icon-wrap.warning {
+      background: rgba(251, 191, 36, 0.12);
+    }
+
+    .notif-icon-wrap.error {
+      background: rgba(248, 113, 113, 0.12);
+    }
+
+    .notif-icon-wrap.info {
+      background: rgba(96, 165, 250, 0.12);
+    }
+
+    .notif-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .notif-body .nb-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-heading);
+      margin-bottom: 2px;
+    }
+
+    .notif-body .nb-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 4px;
+    }
+
+    .notif-body .nb-time {
+      font-size: 11px;
+      color: var(--text-dim-alt);
+    }
+
+    .unread-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #fbbf24;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    .notif-footer {
+      padding: 12px 20px;
+      border-top: 1px solid var(--border-normal);
+      text-align: center;
+    }
+
+    .notif-footer a {
+      font-size: 13px;
+      color: var(--text-tag);
+      cursor: pointer;
+      transition: color var(--transition-fast);
+    }
+
+    .notif-footer a:hover {
+      color: #c4b5fd;
+    }
+
+    /* Help Panel */
+    .help-panel {
+      width: 360px;
+      background: rgba(15, 15, 25, 0.98);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-card);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.08);
+      overflow: hidden;
+    }
+
+    .help-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-normal);
+    }
+
+    .help-header .hh-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-heading);
+    }
+
+    .help-search {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-normal);
+    }
+
+    .help-search-wrapper {
+      position: relative;
+    }
+
+    .help-search-wrapper svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--text-dim-alt);
+    }
+
+    .help-search input {
+      width: 100%;
+      padding: 9px 14px 9px 34px;
+      background: rgba(15, 15, 25, 0.6);
+      border: 1px solid var(--border-normal);
+      border-radius: var(--radius-small);
+      color: var(--text-heading);
+      font-size: 13px;
+      transition: border-color var(--transition-fast);
+    }
+
+    .help-search input:focus {
+      border-color: var(--border-accent-strong);
+    }
+
+    .help-search input::placeholder {
+      color: var(--text-dim-alt);
+    }
+
+    .help-section {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-normal);
+    }
+
+    .help-section:last-child {
+      border-bottom: none;
+    }
+
+    .help-section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .help-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      margin: 0 -10px;
+      border-radius: var(--radius-small);
+      font-size: 13px;
+      color: var(--text-body);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .help-link:hover {
+      background: rgba(139, 92, 246, 0.06);
+      color: var(--text-heading);
+    }
+
+    .help-link .hl-icon {
+      width: 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .help-link svg {
+      width: 14px;
+      height: 14px;
+      color: var(--text-muted);
+    }
+
+    .contact-info {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-normal);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .contact-row span {
+      color: var(--text-body-alt);
+    }
+  </style>
+</head>
+<body>
+  <h1 class="page-title-main">通知中心 & 帮助中心</h1>
+  <p class="page-subtitle-main">系统通知下拉面板与帮助文档快速入口</p>
+
+  <div class="panels-wrapper">
+
+    <!-- ═══ 通知中心面板 ═══ -->
+    <div class="panel-section">
+      <div class="panel-label">通知中心（下拉面板）</div>
+      <div class="notif-panel">
+        <div class="notif-header">
+          <div class="nh-title">
+            通知中心
+            <span class="notif-count">3</span>
+          </div>
+          <span class="read-all">全部已读</span>
+        </div>
+
+        <div class="notif-list">
+          <!-- Unread 1 -->
+          <div class="notif-item unread">
+            <div class="notif-icon-wrap success">✅</div>
+            <div class="notif-body">
+              <div class="nb-title">AI 分析完成</div>
+              <div class="nb-desc">「护肤品_涂抹质地_01.mp4」已完成分析，共切分 12 个分镜 → <a href="09-素材分镜列表页.html" style="color:var(--accent-light);text-decoration:underline;">查看分镜</a></div>
+              <div class="nb-time">3分钟前</div>
+            </div>
+            <div class="unread-dot"></div>
+          </div>
+
+          <!-- Unread 2 -->
+          <div class="notif-item unread">
+            <div class="notif-icon-wrap warning">👤</div>
+            <div class="notif-body">
+              <div class="nb-title">新人脸识别</div>
+              <div class="nb-desc">发现 3 张未标注的人脸，请前往人脸识别库进行标注 → <a href="04-人脸识别库.html" style="color:var(--accent-light);text-decoration:underline;">立即标注</a></div>
+              <div class="nb-time">15分钟前</div>
+            </div>
+            <div class="unread-dot"></div>
+          </div>
+
+          <!-- Unread 3 -->
+          <div class="notif-item unread">
+            <div class="notif-icon-wrap error">❌</div>
+            <div class="notif-body">
+              <div class="nb-title">分析失败</div>
+              <div class="nb-desc">「口红色号对比.mov」分析失败：文件格式不支持，请重新上传</div>
+              <div class="nb-time">1小时前</div>
+            </div>
+            <div class="unread-dot"></div>
+          </div>
+
+          <!-- Read 1 -->
+          <div class="notif-item">
+            <div class="notif-icon-wrap info">📊</div>
+            <div class="notif-body">
+              <div class="nb-title">周报已生成</div>
+              <div class="nb-desc">第5周数据报告已生成，可前往数据分析页面查看</div>
+              <div class="nb-time">昨天 18:30</div>
+            </div>
+          </div>
+
+          <!-- Read 2 -->
+          <div class="notif-item">
+            <div class="notif-icon-wrap success">💾</div>
+            <div class="notif-body">
+              <div class="nb-title">存储空间预警已解除</div>
+              <div class="nb-desc">当前可用空间 2.4 TB，存储空间充足</div>
+              <div class="nb-time">昨天 09:15</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="notif-footer">
+          <a>查看全部通知 →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ 帮助中心面板 ═══ -->
+    <div class="panel-section">
+      <div class="panel-label">帮助中心</div>
+      <div class="help-panel">
+        <div class="help-header">
+          <div class="hh-title">帮助中心</div>
+        </div>
+
+        <div class="help-search">
+          <div class="help-search-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" placeholder="搜索帮助文档…">
+          </div>
+        </div>
+
+        <div class="help-section">
+          <div class="help-section-title">🚀 快速开始</div>
+          <a class="help-link">
+            <span class="hl-icon">📤</span>
+            如何上传素材
+          </a>
+          <a class="help-link">
+            <span class="hl-icon">🔍</span>
+            使用智能搜索
+          </a>
+          <a class="help-link">
+            <span class="hl-icon">📋</span>
+            创建和管理项目
+          </a>
+          <a class="help-link">
+            <span class="hl-icon">👤</span>
+            人脸识别与标注
+          </a>
+          <a class="help-link">
+            <span class="hl-icon">⌨️</span>
+            键盘快捷键
+          </a>
+        </div>
+
+        <div class="help-section">
+          <div class="help-section-title">❓ 常见问题</div>
+          <a class="help-link">
+            <span class="hl-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </span>
+            支持哪些视频格式？
+          </a>
+          <a class="help-link">
+            <span class="hl-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </span>
+            AI 分析需要多长时间？
+          </a>
+          <a class="help-link">
+            <span class="hl-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </span>
+            如何恢复已删除素材？
+          </a>
+          <a class="help-link">
+            <span class="hl-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </span>
+            存储空间不足怎么办？
+          </a>
+        </div>
+
+        <div class="contact-info">
+          <div class="contact-row">📧 技术支持：<span>support@company.com</span></div>
+          <div class="contact-row">💬 在线客服：<span>工作日 9:00-18:00</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
